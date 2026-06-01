@@ -1,0 +1,36 @@
+{
+  "_README": "Edit this file to control the published Family Tree. Re-upload to Netlify to apply changes for all visitors. Do not rename keys.",
+
+  "password_hash_note": "SHA-256 of the admin password. Default is the hash of 'Ara12345'. To change the password, log in as admin and use Change Password, then Download config.json and re-upload.",
+  "password_hash": "d9a96f88da10af3cc482f2691a2b39aa3f84464b432adc36579a4e28db107ef9",
+
+  "tabs_note": "true = visible to all visitors, false = hidden. The owner can still log in via the lock button and will see all tabs regardless of these settings.",
+  "tabs": {
+    "tree": false,
+    "branch": true,
+    "contact": true,
+    "help": true,
+    "validation": false,
+    "support": false,
+    "admin": false
+  },
+
+  "emailjs_note": "Contact form delivery via EmailJS. The public key is safe to expose.",
+  "emailjs": {
+    "service": "service_thyp14q",
+    "template": "template_8yz37jj",
+    "key": "-wyOGF4XslL4bJsXO",
+    "email": ""
+  },
+
+  "support_note": "Optional donation page. Provide PayPal.Me and/or Stripe Payment Link URLs. Leave blank to hide buttons. Set tabs.support to true to show the page.",
+  "support": {
+    "paypal": "https://paypal.me/RAravinthan",
+    "stripe": "https://buy.stripe.com/cNidR22519LJ7oM8b79Ve00",
+    "message": "This tool is free to use and always will be.
+
+If you find it useful and would like to support its continued development, any contribution is genuinely appreciated. Donations help cover running costs, maintenance, licences, and the time needed to keep improving the project.
+
+Thank you for your support — it truly helps."
+  }
+}
