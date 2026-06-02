@@ -151,6 +151,13 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
 /* CANVAS */
 #cv-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
 #cw{flex:1;overflow:hidden;position:relative;cursor:grab;background:var(--bg);min-height:0}
+#tree-searchbar{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:40;
+  display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.95);
+  border:1.5px solid var(--bdr);border-radius:8px;padding:7px 12px;box-shadow:var(--sh2);
+  max-width:92%;flex-wrap:wrap;backdrop-filter:blur(2px)}
+#tree-searchbar .sw{position:relative;min-width:240px;max-width:420px}
+#tree-search-hint{font-size:11px;color:var(--mu);font-style:italic}
+@media (max-width:640px){#tree-search-hint{display:none}#tree-searchbar{top:6px;padding:5px 8px}#tree-searchbar .sw{min-width:180px}}
 #cw.grabbing{cursor:grabbing}
 #canvas{position:absolute;top:0;left:0;transform-origin:0 0}
 #tsvg{position:absolute;top:0;left:0;pointer-events:none;overflow:visible}
@@ -220,7 +227,7 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
 .ea{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .eem{text-align:center;padding:40px;color:var(--mu);font-style:italic}
 /* BRANCH TAB */
-#branch-area{display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden}
+#branch-area{display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden;position:relative}
 #branch-area.on{display:flex}
 #branch-toolbar{padding:10px 14px;border-bottom:1.5px solid var(--bdr);background:var(--bg2);
   display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap}
@@ -278,6 +285,19 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
 .fr .err-msg{font-size:10px;color:var(--red);margin-top:2px;display:none}
 .fr input.invalid~.err-msg,.fr textarea.invalid~.err-msg{display:block}
 .fr textarea{resize:vertical;min-height:52px}
+/* #7 type-to-filter person pickers */
+.pp-wrap{position:relative}
+.pp-inp{width:100%;background:#fff;border:1.5px solid var(--bdr);border-radius:4px;padding:7px 9px;color:var(--tx);font-family:inherit;font-size:12px;outline:none}
+.pp-inp:focus{border-color:var(--gold2)}
+.pp-dd{position:absolute;top:calc(100% + 2px);left:0;right:0;background:#fff;border:1.5px solid var(--bdr);
+  border-radius:5px;max-height:220px;overflow-y:auto;z-index:600;display:none;box-shadow:var(--sh2)}
+.pp-dd.open{display:block}
+.pp-item{padding:6px 10px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--bdr2)}
+.pp-item:hover,.pp-item.sel{background:var(--glt)}
+.pp-item .pp-tm{color:var(--gold2);font-size:11px}
+.pp-item .pp-g{color:var(--mu);font-size:10px}
+.pp-clear{padding:6px 10px;cursor:pointer;font-size:11px;color:var(--mu);font-style:italic;border-bottom:1px solid var(--bdr2)}
+.pp-clear:hover{background:#fff5f5;color:var(--red)}
 .row2c{display:flex;gap:8px}.row2c>*{flex:1}
 .update-row{display:flex;gap:8px;align-items:flex-end;padding:8px 10px;background:var(--bg3);
   border-radius:5px;margin-bottom:6px;border:1px solid var(--bdr2)}
@@ -335,18 +355,18 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
   @page{size:A3 landscape;margin:8mm}
   .node,.bnode{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .ntog{display:none!important}
-  /* Print footer: legend bottom-left, presenter+credits bottom-right */
+  /* Print footer: legend bottom-left, presenter+credits bottom-right (#8 larger fonts) */
   #print-footer{display:flex!important;position:fixed;bottom:0;left:0;right:0;
-    justify-content:space-between;align-items:flex-end;gap:20px;
-    padding:6px 10px;border-top:1px solid #c9bfae;background:#fff;
+    justify-content:space-between;align-items:flex-end;gap:24px;
+    padding:10px 14px;border-top:1.5px solid #c9bfae;background:#fff;
     -webkit-print-color-adjust:exact;print-color-adjust:exact}
-  #print-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:8px;color:#5a4d36;max-width:62%}
-  #print-legend .pl-i{display:flex;align-items:center;gap:3px;white-space:nowrap}
-  #print-legend .pl-dot{width:8px;height:8px;border-radius:2px;display:inline-block}
-  #print-legend .pl-badge{font-size:7px;font-weight:700;color:#fff;padding:1px 3px;border-radius:2px}
-  #print-credits{text-align:right;font-size:9px;color:#3a2f1c;line-height:1.5;white-space:pre-line;min-width:160px}
-  #print-credits .pc-by{font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:#1a1208}
-  #print-credits .pc-cr{color:#7a6a50;font-style:italic}
+  #print-legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:16px;color:#5a4d36;max-width:60%}
+  #print-legend .pl-i{display:flex;align-items:center;gap:5px;white-space:nowrap}
+  #print-legend .pl-dot{width:14px;height:14px;border-radius:3px;display:inline-block}
+  #print-legend .pl-badge{font-size:13px;font-weight:700;color:#fff;padding:2px 6px;border-radius:3px}
+  #print-credits{text-align:right;font-size:18px;color:#3a2f1c;line-height:1.5;white-space:pre-line;min-width:220px}
+  #print-credits .pc-by{font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:#1a1208}
+  #print-credits .pc-cr{color:#7a6a50;font-style:italic;font-size:17px}
 }
 /* Print footer hidden on screen */
 #print-footer{display:none}
@@ -466,7 +486,6 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
     <div class="hb">Family Tree V3.0<small>எமது குடும்ப மரம்</small></div>
     <div id="admin-badge" class="admin-indicator" style="display:none">🔒 ADMIN</div>
     <div class="tb">
-      <div class="sw" id="main-search-wrap"><input type="text" id="si" placeholder="Search name or Tamil…" autocomplete="off"><div id="sdd"></div></div>
       <div id="tree-controls" style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
       <div class="zg"><button class="btn" onclick="zBy(-.15)">&minus;</button><span id="zl">100%</span><button class="btn" onclick="zBy(.15)">+</button></div>
       <button class="btn" onclick="fitV()" title="Fit all">⊞</button>
@@ -506,6 +525,10 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
     <div id="cv-wrap">
       <!-- Tree tab -->
       <div id="cw">
+        <div id="tree-searchbar">
+          <div class="sw" id="main-search-wrap"><input type="text" id="si" placeholder="Search name or Tamil to find &amp; highlight…" autocomplete="off"><div id="sdd"></div></div>
+          <span id="tree-search-hint">Type a name to highlight matches in the tree</span>
+        </div>
         <div id="canvas"><svg id="tsvg"></svg></div>
         <div class="clegend">
           <div class="cl-t">Legend</div>
@@ -564,6 +587,25 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <div style="text-align:center;color:var(--mu);padding:60px;font-style:italic;font-size:14px">
             Search for a person above to view their complete family branch
           </div>
+        </div>
+        <div class="clegend" id="branch-legend" style="display:none">
+          <div class="cl-t">Legend</div>
+          <div class="cl-i">&#x1F1F1;&#x1F1F0; Sri Lanka</div>
+          <div class="cl-i">&#x1F1EC;&#x1F1E7; United Kingdom</div>
+          <div class="cl-i">&#x1F1E6;&#x1F1FA; Australia / NZ</div>
+          <div class="cl-i">&#x1F1E8;&#x1F1E6; Canada / US</div>
+          <div class="cl-i">&#x1F1EE;&#x1F1F3; India</div>
+          <div class="cl-i">&#x1F1E9;&#x1F1EA; Germany / EU</div>
+          <div class="cl-i">&#x271D; Eternal Peace</div>
+          <div class="cl-i">&#x2694; Tamil Eelam</div>
+          <div class="cl-i" style="border-top:1px solid var(--bdr2);padding-top:4px;margin-top:4px"><div class="ldot" style="background:var(--mb)"></div> Male</div>
+          <div class="cl-i"><div class="ldot" style="background:var(--fb)"></div> Female</div>
+          <div class="cl-i" style="color:var(--dec)">&#x2020; Deceased (dashed)</div>
+          <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#2d6a4f;color:#fff;padding:1px 3px;border-radius:2px">A</span> Ancestry</div>
+          <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#0e62b5;color:#fff;padding:1px 3px;border-radius:2px">23</span> 23andMe</div>
+          <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#c0392b;color:#fff;padding:1px 3px;border-radius:2px">MH</span> MyHeritage</div>
+          <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#1a6b9a;color:#fff;padding:1px 3px;border-radius:2px">FT</span> FamilyTreeDNA</div>
+          <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#6d4c41;color:#fff;padding:1px 3px;border-radius:2px">LD</span> LivingDNA</div>
         </div>
       </div>
 
@@ -656,9 +698,11 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
             <div class="help-a">
               Search for a person to see just their branch — their spouse(s), all their descendants, and their siblings — laid out as a clean tree.
               <ul>
+                <li><strong>Click any person</strong> in the branch to see their details in the side panel — this stays on the Branch View tab. Use <strong>&#x25BC; Show as branch root</strong> in the panel to re-centre the branch on that person.</li>
                 <li><strong>Collapse / expand</strong> any person's children with the <strong>&#x25BE; / &#x25B8;</strong> button on their box. Click the <strong>Siblings</strong> heading to show or hide the list of siblings.</li>
                 <li><strong>&#x2193; Export Branch (CSV)</strong> downloads just this branch — the person, their spouse(s) and all descendants — as <em>branch_data.csv</em>.</li>
                 <li><strong>&#x2398; Print Branch</strong> prints or saves the branch as a PDF (A3 landscape), with the legend and credits at the bottom.</li>
+                <li>The <strong>legend</strong> (bottom-left) explains the flags, colours and DNA badges, the same as on the Family Tree tab.</li>
               </ul>
             </div>
           </div>
@@ -680,7 +724,13 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <div class="help-section">
             <div class="help-q">🔒 For Administrators</div>
             <div class="help-a">
-              Click the <strong>Admin</strong> button (top-right of the welcome screen) and enter the password to unlock editing, data import/export, GEDCOM export, validation checks, and all configuration settings.
+              Click the <strong>🔒 Admin</strong> button (top-right) and enter the password to unlock editing, data import/export, GEDCOM export, validation checks, and configuration. Notes on editing:
+              <ul>
+                <li>When <strong>adding a child</strong> from a person, that person and their spouse are pre-filled as the parents, and the country is copied across — adjust as needed.</li>
+                <li>The <strong>Father, Mother and Spouse</strong> fields are type-to-search: start typing a name and pick from the short list instead of scrolling.</li>
+                <li><strong>Generation</strong> can be set manually to override the value auto-calculated from parents; leave it blank to auto-calculate.</li>
+                <li>On the <strong>Admin</strong> tab you can set the welcome-screen credits text, choose which tabs the public sees, and configure the contact-form email and donation links. After changes, use <strong>Download config.json</strong> and re-upload all files to Netlify to publish for everyone.</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -844,13 +894,25 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;text-transform:none;letter-spacing:0;font-weight:400"><input type="checkbox" id="dna-ld" value="livingdna"> <span style="background:#6d4c41;color:#fff;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:700">LD</span> LivingDNA</label>
         </div>
       </div>
+      <div class="fr"><div class="row2">
+        <div><label>Generation (override) </label><input type="number" id="f-gen" min="1" step="1" placeholder="auto from parents"><div style="font-size:10px;color:var(--mu);margin-top:2px">Leave blank to auto-calculate from parents. Shown as Gen N.</div></div>
+        <div></div>
+      </div></div>
       <div class="fsec">Family Links</div>
       <div class="fr"><div class="row2">
-        <div><label>Father ♂</label><select id="f-father"><option value="">-- None --</option></select></div>
-        <div><label>Mother ♀</label><select id="f-mother"><option value="">-- None --</option></select></div>
+        <div><label>Father ♂</label>
+          <div class="pp-wrap"><input type="text" id="f-father-s" class="pp-inp" placeholder="Type a name…" autocomplete="off" oninput="ppInput('father')" onfocus="ppInput('father')"><input type="hidden" id="f-father"><div class="pp-dd" id="f-father-dd"></div></div>
+        </div>
+        <div><label>Mother ♀</label>
+          <div class="pp-wrap"><input type="text" id="f-mother-s" class="pp-inp" placeholder="Type a name…" autocomplete="off" oninput="ppInput('mother')" onfocus="ppInput('mother')"><input type="hidden" id="f-mother"><div class="pp-dd" id="f-mother-dd"></div></div>
+        </div>
       </div></div>
-      <div class="fr"><label>Spouse 1</label><select id="f-spouse"><option value="">-- None --</option></select></div>
-      <div class="fr"><label>Spouse 2 (second marriage)</label><select id="f-spouse2"><option value="">-- None --</option></select></div>
+      <div class="fr"><label>Spouse 1</label>
+        <div class="pp-wrap"><input type="text" id="f-spouse-s" class="pp-inp" placeholder="Type a name…" autocomplete="off" oninput="ppInput('spouse')" onfocus="ppInput('spouse')"><input type="hidden" id="f-spouse"><div class="pp-dd" id="f-spouse-dd"></div></div>
+      </div>
+      <div class="fr"><label>Spouse 2 (second marriage)</label>
+        <div class="pp-wrap"><input type="text" id="f-spouse2-s" class="pp-inp" placeholder="Type a name…" autocomplete="off" oninput="ppInput('spouse2')" onfocus="ppInput('spouse2')"><input type="hidden" id="f-spouse2"><div class="pp-dd" id="f-spouse2-dd"></div></div>
+      </div>
       <div class="fsec">Notes</div>
       <div class="fr"><textarea id="f-notes" placeholder="Additional information…"></textarea></div>
     </div>
@@ -894,6 +956,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 <div id="toast"></div>
 
 <script>
+
 
 var DATA = [];
 var ERRORS = [];
@@ -1304,7 +1367,8 @@ function showPanel(id){
   function ri(badge,person,bg){
     var pc=CTRY[person.country||'']||null,pl=lifeStr(person);
     var privPl=(!ADMIN_MODE&&!person.deceased&&!person.dod)?'':pl;
-    return'<li class="ri" onclick="jumpTo(\''+person.id+'\')">'+
+    var act=(curTab==='branch')?'branchSelect':'jumpTo';
+    return'<li class="ri" onclick="'+act+'(\''+person.id+'\')">'+
       '<span class="rb"'+(bg?' style="background:'+bg+'"':'')+'>'+badge+'</span>'+
       '<div><strong>'+esc(person.name)+(pc?' '+pc.flag:'')+'</strong>'+
       (person.tamil?'<br><span class="rtm">'+esc(person.tamil)+'</span>':'')+
@@ -1333,8 +1397,12 @@ function showPanel(id){
   if(ch.length){h+='<div class="ps">Children ('+ch.length+')</div><ul class="rl">';ch.slice(0,8).forEach(function(c){h+=ri('Child',c,'#e8f0f8');});if(ch.length>8)h+='<li class="ri" style="color:var(--mu)">+ '+(ch.length-8)+' more</li>';h+='</ul>';}
   if(sibs.length){h+='<div class="ps">Siblings ('+sibs.length+')</div><ul class="rl">';sibs.slice(0,5).forEach(function(s){h+=ri('Sibling',s);});if(sibs.length>5)h+='<li class="ri" style="color:var(--mu)">+ '+(sibs.length-5)+' more</li>';h+='</ul>';}
 
-  h+='<div class="pbs"><button class="btn" onclick="jumpTo(\''+id+'\')">&#x2295; Centre</button>';
-  h+='<button class="btn" onclick="togCol(\''+id+'\')">'+( col.has(id)?'&#x25b8; Expand':'&#x25be; Collapse')+'</button>';
+  if(curTab==='branch'){
+    h+='<div class="pbs"><button class="btn" onclick="branchRoot=\''+id+'\';renderBranch();">&#x25BC; Show as branch root</button>';
+  } else {
+    h+='<div class="pbs"><button class="btn" onclick="jumpTo(\''+id+'\')">&#x2295; Centre</button>';
+    h+='<button class="btn" onclick="togCol(\''+id+'\')">'+( col.has(id)?'&#x25b8; Expand':'&#x25be; Collapse')+'</button>';
+  }
   if(ADMIN_MODE){h+='<button class="btn btn-gr" onclick="openEdit(\''+id+'\')">&#x270e; Edit</button><button class="btn" onclick="openAdd(\''+id+'\')">+ Child</button>';}
   h+='</div>';
 
@@ -1486,7 +1554,6 @@ function switchTab(t){
   if(t==='admin'){loadAdminConfig();populateAdminStats();}
   if(t==='support')renderSupport();
   // Main search + tree-only controls belong to the Family Tree tab only
-  var msw=document.getElementById('main-search-wrap'); if(msw) msw.style.display=(t==='tree')?'flex':'none';
   var treeCtrls=document.getElementById('tree-controls'); if(treeCtrls) treeCtrls.style.display=(t==='tree')?'flex':'none';
 }
 
@@ -1547,12 +1614,14 @@ document.addEventListener('click',function(e){if(!e.target.closest('.sw'))sddEl.
 var branchRoot=null;
 function renderBranch(){
   var container=document.getElementById('branch-tree');
-  if(!branchRoot){container.innerHTML='<div style="text-align:center;color:var(--mu);padding:60px;font-style:italic;font-size:14px">Search for a person above to view their complete family branch</div>';return;}
+  var leg=document.getElementById('branch-legend');
+  if(!branchRoot){container.innerHTML='<div style="text-align:center;color:var(--mu);padding:60px;font-style:italic;font-size:14px">Search for a person above to view their complete family branch</div>';if(leg)leg.style.display='none';return;}
   var p=byId[branchRoot];
-  if(!p){container.innerHTML='<div style="color:var(--mu);padding:20px">Person not found</div>';return;}
+  if(!p){container.innerHTML='<div style="color:var(--mu);padding:20px">Person not found</div>';if(leg)leg.style.display='none';return;}
   container.innerHTML=buildBranchHTML(p,0);
   document.getElementById('branch-print-btn').style.display='inline-flex';
   document.getElementById('branch-export-btn').style.display='inline-flex';
+  if(leg)leg.style.display='block';
 }
 
 function mkBNode(person,isRoot){
@@ -1561,7 +1630,7 @@ function mkBNode(person,isRoot){
   var privLoc=(!ADMIN_MODE&&!person.deceased&&!person.dod)?'':person.location;
   var nc='bnode '+(person.gender==='f'?'f':'m')+(person.deceased?' dec':'')+(isRoot?' root':'');
   var photoHtml=person.photo_url?'<img class="bn-photo" src="'+esc(person.photo_url)+'" onerror="this.style.display=\'none\'" onclick="openLightbox(\''+esc(person.photo_url)+'\')">':'';
-  return'<div class="'+nc+'" onclick="jumpToTree(\''+person.id+'\')" title="Click to view in tree">'+
+  return'<div class="'+nc+'" onclick="branchSelect(\''+person.id+'\')" title="Click to view details">'+
     '<div class="bn-top"><span class="bn-icon">'+(person.gender==='f'?'\u2640':'\u2642')+'</span>'+
     '<div style="display:flex;align-items:center;gap:4px">'+(pc?'<span class="bn-flag" title="'+pc.label+'">'+pc.flag+'</span>':'')+photoHtml+'</div></div>'+
     '<div class="bn-name">'+esc(person.name)+'</div>'+
@@ -1605,7 +1674,7 @@ function buildBranchHTML(p,depth){
     html+='<span class="sib-toggle" onclick="toggleBranchSibs(\''+p.id+'\')">'+(sibsOpen?'\u25BE':'\u25B8')+' Siblings ('+sibs.length+')</span>';
     if(sibsOpen){
       html+=': ';
-      sibs.forEach(function(s,i){html+='<span class="sib-tag" onclick="jumpToTree(\''+s.id+'\')">'+esc(s.name)+'</span>'+(i<sibs.length-1?', ':'');});
+      sibs.forEach(function(s,i){html+='<span class="sib-tag" onclick="branchSelect(\''+s.id+'\')">'+esc(s.name)+'</span>'+(i<sibs.length-1?', ':'');});
     }
     html+='</div>';
   }
@@ -1622,6 +1691,14 @@ function buildBranchHTML(p,depth){
 }
 
 function jumpToTree(id){switchTab('tree');setTimeout(function(){selId=id;render();showPanel(id);jumpToCtx(id);},150);}
+// #1: clicking a node in Branch View shows the details panel WITHOUT leaving the tab
+function branchSelect(id){
+  if(!byId[id])return;
+  selId=id;
+  if(!panO) togglePanel();        // ensure panel is open
+  showPanel(id);
+  // panel "Centre" button would jump to tree; in branch context we just show details here
+}
 
 var bsEl=document.getElementById('branch-search'),bsddEl=document.getElementById('branch-sdd');
 var bsRes=[],bsSel=-1;
@@ -1659,7 +1736,7 @@ function printBranch(){
   if(branchRoot&&byId[branchRoot])document.title='Family Branch - '+byId[branchRoot].name;
   preparePrintFooter();
   var style=document.createElement('style');
-  style.textContent='@media print{#login,header,.tabbar,#panel,#cw,#err-area,#toast,.ov,#branch-toolbar,#contact-area,#admin-area{display:none!important}#branch-area{display:block!important;overflow:visible!important;height:auto!important}#branch-tree{overflow:visible!important;height:auto!important;padding-bottom:70px!important}@page{size:A3 landscape;margin:8mm}.bnode{-webkit-print-color-adjust:exact;print-color-adjust:exact}.branch-toggle,.sib-toggle{display:none!important}}';
+  style.textContent='@media print{#login,header,.tabbar,#panel,#cw,#err-area,#toast,.ov,#branch-toolbar,#contact-area,#admin-area,#branch-legend{display:none!important}#branch-area{display:block!important;overflow:visible!important;height:auto!important}#branch-tree{overflow:visible!important;height:auto!important;padding-bottom:120px!important}@page{size:A3 landscape;margin:8mm}.bnode{-webkit-print-color-adjust:exact;print-color-adjust:exact}.branch-toggle,.sib-toggle{display:none!important}}';
   document.head.appendChild(style);window.print();
   setTimeout(function(){document.head.removeChild(style);document.title=orig;},500);
 }
@@ -1872,12 +1949,40 @@ function updMM(){var mc=document.getElementById('mmc'),ctx=mc.getContext('2d');c
 function updMMVP(){var mc=document.getElementById('mmc');if(!mc._p)return;var s=mc._p.s,ox=mc._p.ox,oy=mc._p.oy;var c=document.getElementById('cw'),cw=c.clientWidth,ch=c.clientHeight;var vx=(-px/sc)*s+ox,vy=(-py/sc)*s+oy,vw=(cw/sc)*s,vh=(ch/sc)*s;var vp=document.getElementById('mmap-vp');vp.style.left=Math.max(0,vx)+'px';vp.style.top=Math.max(0,vy)+'px';vp.style.width=Math.min(155,vw)+'px';vp.style.height=Math.min(86,vh)+'px';}
 
 // ---- MODAL (admin only) ----
-function popSels(excl){
-  var sorted=DATA.filter(function(p){return p.id!==excl;}).slice().sort(function(a,b){return a.name.localeCompare(b.name);});
-  var base='<option value="">-- None --</option>';
-  var opts=base+sorted.map(function(p){return'<option value="'+p.id+'">'+esc(p.name)+(p.tamil?' / '+p.tamil:'')+' (Gen '+(p.gen+1)+')</option>';}).join('');
-  ['f-father','f-mother','f-spouse','f-spouse2'].forEach(function(id){var el=document.getElementById(id);var v=el.value;el.innerHTML=opts;el.value=v;});
+// #7 type-to-filter person pickers (replaces the old <select> popSels)
+var ppExcl=null, ppRes={}, ppSel={};
+function setPicker(role,id){
+  document.getElementById('f-'+role).value=id||'';
+  var s=document.getElementById('f-'+role+'-s');
+  s.value=id&&byId[id]?byId[id].name:'';
+  var dd=document.getElementById('f-'+role+'-dd'); if(dd){dd.classList.remove('open');}
 }
+function clearPickers(){ ['father','mother','spouse','spouse2'].forEach(function(r){setPicker(r,'');}); }
+function popSels(excl){ ppExcl=excl; } // retains signature; pickers filter live against ppExcl
+function ppInput(role){
+  var q=document.getElementById('f-'+role+'-s').value.trim().toLowerCase();
+  var dd=document.getElementById('f-'+role+'-dd');
+  // if the field was cleared, also clear the stored id
+  if(!q){ document.getElementById('f-'+role).value=''; }
+  var res=DATA.filter(function(p){
+    if(p.id===ppExcl)return false;
+    if(!q)return true;
+    return p.name.toLowerCase().indexOf(q)>=0 || (p.tamil&&p.tamil.indexOf(q)>=0);
+  }).sort(function(a,b){return a.name.localeCompare(b.name);}).slice(0,40);
+  ppRes[role]=res; ppSel[role]=-1;
+  var html='<div class="pp-clear" onclick="setPicker(\''+role+'\',\'\')">-- None / clear --</div>';
+  if(!res.length){ html+='<div class="pp-item" style="color:var(--mu);font-style:italic">No match</div>'; }
+  else html+=res.map(function(p,i){
+    return '<div class="pp-item" data-i="'+i+'" onclick="setPicker(\''+role+'\',\''+p.id+'\')">'+
+      esc(p.name)+(p.tamil?' <span class="pp-tm">'+esc(p.tamil)+'</span>':'')+' <span class="pp-g">(Gen '+(p.gen+1)+')</span></div>';
+  }).join('');
+  dd.innerHTML=html; dd.classList.add('open');
+}
+// close picker dropdowns when clicking elsewhere in the modal
+document.addEventListener('click',function(e){
+  if(e.target.closest && e.target.closest('.pp-wrap'))return;
+  ['father','mother','spouse','spouse2'].forEach(function(r){var dd=document.getElementById('f-'+r+'-dd');if(dd)dd.classList.remove('open');});
+});
 function setDnaCheckboxes(dnaArr){var map={ancestry:'dna-ancestry','23andme':'dna-23',myheritage:'dna-mh',ftdna:'dna-ft',livingdna:'dna-ld'};Object.keys(map).forEach(function(k){var el=document.getElementById(map[k]);if(el)el.checked=dnaArr&&dnaArr.indexOf(k)>=0;});}
 function getDnaFromCheckboxes(){var map={ancestry:'dna-ancestry','23andme':'dna-23',myheritage:'dna-mh',ftdna:'dna-ft',livingdna:'dna-ld'};return Object.keys(map).filter(function(k){var el=document.getElementById(map[k]);return el&&el.checked;});}
 
@@ -1886,9 +1991,22 @@ function openAdd(pId){
   document.getElementById('modal-title').textContent='Add Person';document.getElementById('f-id').value='';
   ['f-name','f-tamil','f-dob','f-dod','f-pob','f-loc','f-photo','f-notes'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('f-gender').value='m';document.getElementById('f-country').value='';document.getElementById('f-deceased').checked=false;
+  document.getElementById('f-gen').value='';
   document.getElementById('del-btn').style.display='none';setDnaCheckboxes([]);popSels(null);
-  document.getElementById('f-father').value='';document.getElementById('f-mother').value='';document.getElementById('f-spouse').value='';document.getElementById('f-spouse2').value='';
-  if(pId){var par=byId[pId];if(par){if(par.gender==='m')document.getElementById('f-father').value=pId;else document.getElementById('f-mother').value=pId;}}
+  clearPickers();
+  if(pId){
+    var par=byId[pId];
+    if(par){
+      // #6 pre-fill parents from clicked node + their spouse, by gender
+      var partner=byId[par.spouse_id||''] || byId[par.spouse2_id||''];
+      if(par.gender==='f'){ setPicker('mother',par.id); if(partner&&partner.gender==='m')setPicker('father',partner.id); }
+      else { setPicker('father',par.id); if(partner&&partner.gender==='f')setPicker('mother',partner.id); }
+      // #6 pre-fill country from the clicked node if available
+      if(par.country) document.getElementById('f-country').value=par.country;
+      // suggest generation = parent gen + 1 (still overrideable / auto on save)
+      document.getElementById('f-gen').value=(par.gen||0)+2; // shown as Gen N (1-based)
+    }
+  }
   document.getElementById('modal').classList.add('open');setTimeout(function(){document.getElementById('f-name').focus();},100);
 }
 function openEdit(id){
@@ -1899,9 +2017,10 @@ function openEdit(id){
   document.getElementById('f-dob').value=p.dob||'';document.getElementById('f-dod').value=p.dod||'';document.getElementById('f-pob').value=p.pob||'';
   document.getElementById('f-loc').value=p.location||'';document.getElementById('f-country').value=p.country||'';document.getElementById('f-deceased').checked=!!p.deceased;
   document.getElementById('f-photo').value=p.photo_url||'';document.getElementById('f-notes').value=p.notes||'';
+  document.getElementById('f-gen').value=(p.gen!=null?(p.gen+1):''); // show 1-based
   setDnaCheckboxes(p.dna||[]);document.getElementById('del-btn').style.display='block';popSels(id);
-  document.getElementById('f-father').value=p.father_id||'';document.getElementById('f-mother').value=p.mother_id||'';
-  document.getElementById('f-spouse').value=p.spouse_id||'';document.getElementById('f-spouse2').value=p.spouse2_id||'';
+  setPicker('father',p.father_id||'');setPicker('mother',p.mother_id||'');
+  setPicker('spouse',p.spouse_id||'');setPicker('spouse2',p.spouse2_id||'');
   document.getElementById('modal').classList.add('open');
 }
 function closeModal(){document.getElementById('modal').classList.remove('open');}
@@ -1912,6 +2031,9 @@ function savePerson(){
   var nFa=document.getElementById('f-father').value,nMo=document.getElementById('f-mother').value;
   var nSp=document.getElementById('f-spouse').value,nSp2=document.getElementById('f-spouse2').value;
   var gen=0;if(nFa&&byId[nFa])gen=Math.max(gen,(byId[nFa].gen||0)+1);if(nMo&&byId[nMo])gen=Math.max(gen,(byId[nMo].gen||0)+1);if(!gen&&oldP)gen=oldP.gen;
+  // #5 manual generation override (field is 1-based; internal is 0-based)
+  var genField=document.getElementById('f-gen').value;
+  if(genField!==''&&!isNaN(parseInt(genField,10))){ gen=Math.max(0,parseInt(genField,10)-1); }
   var p={id:id,name:name,tamil:document.getElementById('f-tamil').value.trim(),gender:document.getElementById('f-gender').value,
     dob:document.getElementById('f-dob').value.trim(),dod:document.getElementById('f-dod').value.trim(),pob:document.getElementById('f-pob').value.trim(),
     location:document.getElementById('f-loc').value.trim(),country:document.getElementById('f-country').value,deceased:document.getElementById('f-deceased').checked,
@@ -2238,6 +2360,18 @@ function parseCSVText(txt){
 
 function cleanData(arr){
   var ids={}; arr.forEach(function(p){ids[p.id]=true;});
+  // Normalize country codes from the source data to the canonical CTRY keys
+  var CMAP={lk:'LK',sl:'LK',uk:'GB',gb:'GB',au:'AU',nz:'AU',ca:'CA',us:'CA',in:'IN',
+            eu:'DE',de:'DE',no:'DE',xx:'XX',ee:'EE'};
+  arr.forEach(function(p){
+    var c=(p.country||'').trim();
+    if(!c){return;}
+    if(CTRY[c])return;                       // already canonical (e.g. 'EE')
+    var lc=c.toLowerCase();
+    if(CMAP[lc]) p.country=CMAP[lc];
+    else if(CTRY[c.toUpperCase()]) p.country=c.toUpperCase();
+    // unknown codes (e.g. 'me','al') are left as-is; they simply show no flag
+  });
   arr.forEach(function(p){
     ['father_id','mother_id','spouse_id','spouse2_id'].forEach(function(f){
       var v=(p[f]||'').trim();
@@ -2308,6 +2442,7 @@ document.addEventListener('keydown',function(e){
 });
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===document.getElementById('modal'))closeModal();});
 document.getElementById('admin-modal').addEventListener('click',function(e){if(e.target===document.getElementById('admin-modal'))closeAdminModal();});
+
 
 
 
