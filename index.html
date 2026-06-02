@@ -166,8 +166,10 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
 .node.sd{opacity:.18}
 .node.fl{animation:fl .65s ease-in-out 3}
 @keyframes fl{0%,100%{box-shadow:0 0 0 3px rgba(232,160,0,.5)}50%{box-shadow:0 0 0 8px rgba(232,160,0,.75)}}
-.node[data-k="1"][data-e="0"]::after{content:'\25b8';position:absolute;right:3px;bottom:3px;font-size:8px;color:var(--mu)}
-.node[data-k="1"][data-e="1"]::after{content:'\25be';position:absolute;right:3px;bottom:3px;font-size:8px;color:var(--gold2)}
+.ntog{position:absolute;right:2px;bottom:2px;width:18px;height:18px;padding:0;line-height:16px;text-align:center;
+  font-size:10px;border:1px solid var(--bdr);background:#fff;color:var(--gold2);border-radius:3px;cursor:pointer;z-index:6}
+.ntog:hover{background:var(--glt);border-color:var(--gold2)}
+.ncol-badge{display:block;font-size:8px;color:var(--mu);font-style:italic;margin-top:2px}
 .nfl{position:absolute;top:2px;right:6px;font-size:10px;line-height:1}
 .ndna{position:absolute;top:2px;left:6px;display:flex;gap:2px;flex-wrap:wrap;max-width:60px}
 .ndna-badge{font-size:8px;font-weight:700;padding:1px 3px;border-radius:2px;color:#fff;line-height:1.2;white-space:nowrap}
@@ -332,7 +334,25 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
   .main{overflow:visible!important;height:auto!important;display:block!important}
   @page{size:A3 landscape;margin:8mm}
   .node,.bnode{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ntog{display:none!important}
+  /* Print footer: legend bottom-left, presenter+credits bottom-right */
+  #print-footer{display:flex!important;position:fixed;bottom:0;left:0;right:0;
+    justify-content:space-between;align-items:flex-end;gap:20px;
+    padding:6px 10px;border-top:1px solid #c9bfae;background:#fff;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #print-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:8px;color:#5a4d36;max-width:62%}
+  #print-legend .pl-i{display:flex;align-items:center;gap:3px;white-space:nowrap}
+  #print-legend .pl-dot{width:8px;height:8px;border-radius:2px;display:inline-block}
+  #print-legend .pl-badge{font-size:7px;font-weight:700;color:#fff;padding:1px 3px;border-radius:2px}
+  #print-credits{text-align:right;font-size:9px;color:#3a2f1c;line-height:1.5;white-space:pre-line;min-width:160px}
+  #print-credits .pc-by{font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:#1a1208}
+  #print-credits .pc-cr{color:#7a6a50;font-style:italic}
 }
+/* Print footer hidden on screen */
+#print-footer{display:none}
+/* #3 per-node collapse toggle deferred to a later version - hidden for now */
+.ntog{display:none!important}
+.ncol-badge{display:none!important}
 
 /* Admin modal above login screen */
 #admin-modal { z-index: 10001 !important; }
@@ -424,6 +444,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
     <div class="ldiv"></div>
     <div style="font-size:9px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:5px">Presented by</div>
     <div class="la-n">Raj Aravinthan</div>
+    <div class="la-credits" id="welcome-credits" style="font-size:11px;color:var(--gold2);margin-top:8px;line-height:1.6;white-space:pre-line;max-width:380px"></div>
     <button class="lb" onclick="enterApp()">Enter Family Tree</button>
     <div class="sr">
       <div class="si2"><div class="sn">1,144</div><div class="sl">Members</div></div>
@@ -436,17 +457,24 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 
 <!-- MAIN APP (read-only by default; admin features appear after login) -->
 <div id="app">
+  <!-- Print-only footer: legend (left) + presenter/credits (right). Populated by preparePrintFooter() -->
+  <div id="print-footer" aria-hidden="true">
+    <div id="print-legend"></div>
+    <div id="print-credits"></div>
+  </div>
   <header>
     <div class="hb">Family Tree V3.0<small>எமது குடும்ப மரம்</small></div>
     <div id="admin-badge" class="admin-indicator" style="display:none">🔒 ADMIN</div>
     <div class="tb">
-      <div class="sw"><input type="text" id="si" placeholder="Search name or Tamil…" autocomplete="off"><div id="sdd"></div></div>
+      <div class="sw" id="main-search-wrap"><input type="text" id="si" placeholder="Search name or Tamil…" autocomplete="off"><div id="sdd"></div></div>
+      <div id="tree-controls" style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
       <div class="zg"><button class="btn" onclick="zBy(-.15)">&minus;</button><span id="zl">100%</span><button class="btn" onclick="zBy(.15)">+</button></div>
       <button class="btn" onclick="fitV()" title="Fit all">⊞</button>
       <div class="vs"></div>
       <button class="btn on" id="pbtn" onclick="togglePanel()">▧</button>
       <button class="btn" onclick="expandAll()">⊕ All</button>
       <button class="btn" onclick="collapseAll()">⊖ All</button>
+      </div>
       <div class="vs" id="admin-sep" style="display:none"></div>
       <div id="admin-toolbar" style="display:none;gap:4px;align-items:center;flex-wrap:wrap">
         <button class="btn btn-gr" onclick="openAdd(null)">+ Person</button>
@@ -529,6 +557,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
             <div id="branch-sdd"></div>
           </div>
           <span id="branch-hint">Search by name to see full branch with spouse &amp; all descendants</span>
+          <button class="btn" id="branch-export-btn" onclick="doExportBranchCSV()" style="display:none">↓ Export Branch (CSV)</button>
           <button class="btn btn-pu" id="branch-print-btn" onclick="printBranch()" style="display:none">⎙ Print Branch</button>
         </div>
         <div id="branch-tree">
@@ -599,10 +628,11 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
               The main view shows the entire family across all generations. Each box is one person.
               <ul>
                 <li><strong>Click</strong> a person to see their full details in the side panel (parents, spouse, children, siblings).</li>
-                <li><strong>Double-click</strong> a person with children to collapse or expand their branch.</li>
+                <li><strong>Collapse / expand</strong> a person's children using the small <strong>&#x25BE; / &#x25B8;</strong> button at the bottom-right of their box, or by double-clicking the box. A collapsed box shows how many children are hidden.</li>
                 <li><strong>Drag</strong> empty space to move around. <strong>Scroll / pinch</strong> to zoom in and out.</li>
                 <li>Use <strong>&#x2295; All</strong> / <strong>&#x2296; All</strong> to expand or collapse the whole tree.</li>
-                <li>The small map (bottom-right) shows where you are; the legend (bottom-left) explains the country flags, colours and DNA badges.</li>
+                <li>The search box (top of this tab) finds anyone by English or Tamil name; the small map (bottom-right) shows where you are; the legend (bottom-left) explains the flags, colours and DNA badges.</li>
+                <li>Use <strong>&#x2398; PDF</strong> (admin) to print or save the tree as a PDF; the legend and the "Presented by" credits are added to the bottom of the page automatically.</li>
               </ul>
             </div>
           </div>
@@ -610,7 +640,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <div class="help-section">
             <div class="help-q">🔍 Searching</div>
             <div class="help-a">
-              Type any name (English or Tamil) in the search box at the top. Matching people are highlighted in the tree and listed in a dropdown. Click a result to jump straight to that person.
+              On the Family Tree tab, type any name (English or Tamil) in the search box at the top of that tab. Matching people are highlighted in the tree and listed in a dropdown — click a result to jump straight to that person. Branch View has its own separate search box.
             </div>
           </div>
 
@@ -624,7 +654,12 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <div class="help-section">
             <div class="help-q">🧵 Branch View Tab</div>
             <div class="help-a">
-              Search for a person to see just their branch — their spouse(s), all their descendants, and their siblings — laid out as a clean tree. Use <strong>Print Branch</strong> to print or save that single family branch as a PDF (A3 landscape).
+              Search for a person to see just their branch — their spouse(s), all their descendants, and their siblings — laid out as a clean tree.
+              <ul>
+                <li><strong>Collapse / expand</strong> any person's children with the <strong>&#x25BE; / &#x25B8;</strong> button on their box. Click the <strong>Siblings</strong> heading to show or hide the list of siblings.</li>
+                <li><strong>&#x2193; Export Branch (CSV)</strong> downloads just this branch — the person, their spouse(s) and all descendants — as <em>branch_data.csv</em>.</li>
+                <li><strong>&#x2398; Print Branch</strong> prints or saves the branch as a PDF (A3 landscape), with the legend and credits at the bottom.</li>
+              </ul>
             </div>
           </div>
 
@@ -668,6 +703,14 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
             <div id="pw-strength" style="font-size:11px;margin-bottom:8px;color:var(--mu)"></div>
             <div class="fr"><label>Confirm New Password</label><input type="password" id="a-conf-pw" placeholder="Confirm new password"></div>
             <button class="btn btn-dk" onclick="changePassword()" style="margin-top:4px">Change Password</button>
+          </div>
+          <div class="admin-section">
+            <div class="admin-section-title">📝 Welcome Screen Text</div>
+            <p style="font-size:11px;color:var(--mu);margin-bottom:10px;line-height:1.6">
+              Text shown on the welcome screen, just under "Presented by Raj Aravinthan". Use it to credit contributors. Line breaks are kept. Save, then Download config.json and re-upload to publish for all.
+            </p>
+            <div class="fr"><textarea id="a-credits" rows="3" placeholder="e.g. Compiled with contributions from&#10;Anu, Mala &amp; the extended family"></textarea></div>
+            <button class="btn btn-dk" onclick="saveCredits()">Save Welcome Text</button>
           </div>
           <div class="admin-section">
             <div class="admin-section-title">🗂 Tab Visibility (Publishing)</div>
@@ -851,6 +894,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 <div id="toast"></div>
 
 <script>
+
 var DATA = [];
 var ERRORS = [];
 var INIT_ERRORS = [];
@@ -865,11 +909,13 @@ var CONFIG_KEY = 'ftv2_config';
 var CONFIG = {};
 
 // V3: config is loaded from external config.json (see loadExternal). These are fallback defaults.
+function applyCredits(){ var el=document.getElementById('welcome-credits'); if(el) el.textContent=CONFIG.credits||''; }
 function defaultConfig(){
   return {
     emailjs:{service:'',template:'',key:'',email:''},
     support:{paypal:'',stripe:'',message:''},
-    tabs:{tree:false,branch:true,contact:true,help:true,validation:false,support:false,admin:false}
+    tabs:{tree:false,branch:true,contact:true,help:true,validation:false,support:false,admin:false},
+    credits:''
   };
 }
 CONFIG = defaultConfig();
@@ -879,6 +925,7 @@ function loadLocalOverrides(){
     if(o.emailjs) CONFIG.emailjs=o.emailjs;
     if(o.support) CONFIG.support=o.support;
     if(o.tabs) CONFIG.tabs=o.tabs;
+    if(typeof o.credits==='string') CONFIG.credits=o.credits;
   } } catch(e) {}
 }
 
@@ -930,6 +977,7 @@ function applyAdminMode() {
   loadAdminConfig();
   loadSupportConfig();
   loadTabToggles();
+  loadCreditsField();
   runVal();
   populateAdminStats();
   if(selId) showPanel(selId); else render();
@@ -1210,13 +1258,17 @@ function render(){
     var showLoc=(!ADMIN_MODE&&!p.deceased&&!p.dod)?'':p.location;
     var dnaHtml=dnaBadges(p.dna);
     var photoHtml=p.photo_url?'<img class="nphoto" src="'+esc(p.photo_url)+'" alt="" onclick="openLightbox(\''+esc(p.photo_url)+'\')" onerror="this.style.display=\'none\'">':'';
+    var kc=kids(p.id).length;
+    var togHtml=hk?'<button class="ntog" title="'+(ic?'Expand '+kc+' children':'Collapse children')+'" onclick="event.stopPropagation();togCol(\''+p.id+'\')">'+(ic?'&#x25B8;':'&#x25BE;')+'</button>':'';
     nd.innerHTML=
+      togHtml+
       (dnaHtml?'<div class="ndna">'+dnaHtml+'</div>':'')+
       (ctry?'<span class="nfl" title="'+ctry.label+'">'+ctry.flag+'</span>':'')+
       '<span class="nna" title="'+esc(p.name)+'">'+esc(p.name)+'</span>'+
       (p.tamil?'<span class="ntm">'+esc(p.tamil)+'</span>':'')+
       (showLife?'<span class="nli">'+esc(showLife)+'</span>':'')+
       (showLoc?'<span class="nlo">'+esc(showLoc)+'</span>':'')+
+      (ic&&hk?'<span class="ncol-badge">&#x25B8; '+kc+' hidden</span>':'')+
       photoHtml;
     nd.addEventListener('click',function(e){e.stopPropagation();onNC(p.id);});
     nd.addEventListener('dblclick',function(e){e.stopPropagation();togCol(p.id);});
@@ -1433,6 +1485,9 @@ function switchTab(t){
   if(t==='contact')initContactForm();
   if(t==='admin'){loadAdminConfig();populateAdminStats();}
   if(t==='support')renderSupport();
+  // Main search + tree-only controls belong to the Family Tree tab only
+  var msw=document.getElementById('main-search-wrap'); if(msw) msw.style.display=(t==='tree')?'flex':'none';
+  var treeCtrls=document.getElementById('tree-controls'); if(treeCtrls) treeCtrls.style.display=(t==='tree')?'flex':'none';
 }
 
 // ---- SEARCH ----
@@ -1497,6 +1552,7 @@ function renderBranch(){
   if(!p){container.innerHTML='<div style="color:var(--mu);padding:20px">Person not found</div>';return;}
   container.innerHTML=buildBranchHTML(p,0);
   document.getElementById('branch-print-btn').style.display='inline-flex';
+  document.getElementById('branch-export-btn').style.display='inline-flex';
 }
 
 function mkBNode(person,isRoot){
@@ -1601,10 +1657,36 @@ document.addEventListener('click',function(e){if(!e.target.closest('.bsw'))bsddE
 function printBranch(){
   var orig=document.title;
   if(branchRoot&&byId[branchRoot])document.title='Family Branch - '+byId[branchRoot].name;
+  preparePrintFooter();
   var style=document.createElement('style');
-  style.textContent='@media print{#login,header,.tabbar,#panel,#cw,#err-area,#toast,.ov,#branch-toolbar,#contact-area,#admin-area{display:none!important}#branch-area{display:block!important;overflow:visible!important;height:auto!important}#branch-tree{overflow:visible!important;height:auto!important}@page{size:A3 landscape;margin:8mm}.bnode{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
+  style.textContent='@media print{#login,header,.tabbar,#panel,#cw,#err-area,#toast,.ov,#branch-toolbar,#contact-area,#admin-area{display:none!important}#branch-area{display:block!important;overflow:visible!important;height:auto!important}#branch-tree{overflow:visible!important;height:auto!important;padding-bottom:70px!important}@page{size:A3 landscape;margin:8mm}.bnode{-webkit-print-color-adjust:exact;print-color-adjust:exact}.branch-toggle,.sib-toggle{display:none!important}}';
   document.head.appendChild(style);window.print();
   setTimeout(function(){document.head.removeChild(style);document.title=orig;},500);
+}
+// Build the print-only footer: legend (left) + presenter & credits (right)
+function preparePrintFooter(){
+  var leg=document.getElementById('print-legend'), cr=document.getElementById('print-credits');
+  if(leg){
+    var items=[
+      ['flag','&#x1F1F1;&#x1F1F0;','Sri Lanka'],['flag','&#x1F1EC;&#x1F1E7;','UK'],['flag','&#x1F1E6;&#x1F1FA;','Australia/NZ'],
+      ['flag','&#x1F1E8;&#x1F1E6;','Canada/US'],['flag','&#x1F1EE;&#x1F1F3;','India'],['flag','&#x1F1E9;&#x1F1EA;','Germany/EU'],
+      ['flag','&#x271D;','Eternal Peace'],['flag','&#x2694;','Tamil Eelam'],
+      ['dot','#8ab0d0','Male'],['dot','#c090b8','Female'],['txt','&#x2020;','Deceased'],
+      ['badge','#2d6a4f|A','Ancestry'],['badge','#0e62b5|23','23andMe'],['badge','#c0392b|MH','MyHeritage'],
+      ['badge','#1a6b9a|FT','FamilyTreeDNA'],['badge','#6d4c41|LD','LivingDNA']
+    ];
+    leg.innerHTML=items.map(function(it){
+      if(it[0]==='dot') return '<span class="pl-i"><span class="pl-dot" style="background:'+it[1]+'"></span>'+it[2]+'</span>';
+      if(it[0]==='badge'){var pp=it[1].split('|');return '<span class="pl-i"><span class="pl-badge" style="background:'+pp[0]+'">'+pp[1]+'</span>'+it[2]+'</span>';}
+      return '<span class="pl-i"><span>'+it[1]+'</span>'+it[2]+'</span>';
+    }).join('');
+  }
+  if(cr){
+    var credits=(CONFIG.credits||'').trim();
+    cr.innerHTML='<div class="pc-by">Presented by Raj Aravinthan</div>'+
+      (credits?'<div class="pc-cr">'+esc(credits)+'</div>':'')+
+      '<div style="font-size:8px;color:#999;margin-top:2px">&copy; 2026 Raj Aravinthan &middot; All Rights Reserved</div>';
+  }
 }
 
 // ---- CONTACT FORM ----
@@ -1908,6 +1990,26 @@ function doExportCSV(){
   var csv=[CCOLS.join(',')].concat(rows).join('\n');
   var b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});var u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='FamilyTree_V2.csv';a.click();URL.revokeObjectURL(u);toast('Exported '+DATA.length+' people');
 }
+// Export ONLY the currently displayed branch (root person + spouse(s) + all descendants) as branch_data.csv
+function doExportBranchCSV(){
+  if(!branchRoot||!byId[branchRoot]){toast('Open a branch first (search a person in Branch View)');return;}
+  function qv(v){if(Array.isArray(v))v=v.join(';');var s=String(v!=null?v:'');return(s.indexOf(',')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0)?'"'+s.replace(/"/g,'""')+'"':s;}
+  var inc={}, order=[];
+  function add(id){ if(!id||!byId[id]||inc[id])return; inc[id]=true; order.push(id); }
+  function walk(id){
+    var p=byId[id]; if(!p)return;
+    add(id);
+    if(p.spouse_id) add(p.spouse_id);
+    if(p.spouse2_id) add(p.spouse2_id);
+    kids(id).forEach(function(cid){ if(!inc[cid]){ walk(cid); } });
+  }
+  walk(branchRoot);
+  var rows=order.map(function(id){return CCOLS.map(function(c){return qv(byId[id][c]);}).join(',');});
+  var csv=[CCOLS.join(',')].concat(rows).join('\n');
+  var b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  var u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='branch_data.csv';a.click();URL.revokeObjectURL(u);
+  toast('Exported branch: '+order.length+' people');
+}
 function doImportCSV(ev){
   var file=ev.target.files[0];if(!file)return;
   var r=new FileReader();
@@ -1964,7 +2066,7 @@ function doGEDCOM(){
 }
 
 // ---- PDF ----
-function doPDF(){var c=document.getElementById('canvas'),s=c.style.transform;c.style.transform='translate(40px,40px) scale(1)';toast('Printing -- A3 Landscape -> Save as PDF');setTimeout(function(){window.print();c.style.transform=s;},350);}
+function doPDF(){preparePrintFooter();var c=document.getElementById('canvas'),s=c.style.transform;c.style.transform='translate(40px,40px) scale(1)';toast('Printing -- A3 Landscape -> Save as PDF');setTimeout(function(){window.print();c.style.transform=s;},350);}
 
 // ---- TOAST ----
 var _tt;
@@ -2038,6 +2140,8 @@ function saveSupportConfig() {
   toast('Donation settings saved (this device). Use Download config.json to publish for all.');
 }
 
+function saveCredits(){ CONFIG.credits=document.getElementById('a-credits').value; persistLocal(); applyCredits(); toast('Welcome text saved (this device). Use Download config.json to publish for all.'); }
+function loadCreditsField(){ var el=document.getElementById('a-credits'); if(el) el.value=CONFIG.credits||''; }
 // ---- TAB VISIBILITY TOGGLES (admin) ----
 function loadTabToggles(){
   var t = CONFIG.tabs || {};
@@ -2058,7 +2162,7 @@ function saveTabToggles(){
   toast('Tab settings updated (this device). Use Download config.json to publish for all.');
 }
 function persistLocal(){
-  try{ localStorage.setItem(CONFIG_KEY, JSON.stringify({emailjs:CONFIG.emailjs,support:CONFIG.support,tabs:CONFIG.tabs})); }catch(e){}
+  try{ localStorage.setItem(CONFIG_KEY, JSON.stringify({emailjs:CONFIG.emailjs,support:CONFIG.support,tabs:CONFIG.tabs,credits:CONFIG.credits})); }catch(e){}
 }
 // Build a clean config.json reflecting current settings, for re-upload to Netlify
 function downloadConfigJSON(){
@@ -2072,6 +2176,7 @@ function downloadConfigJSON(){
       support: !!(CONFIG.tabs&&CONFIG.tabs.support),
       admin: !!(CONFIG.tabs&&CONFIG.tabs.admin)
     },
+    "credits": CONFIG.credits||'',
     "emailjs": CONFIG.emailjs||{service:'',template:'',key:'',email:''},
     "support": CONFIG.support||{paypal:'',stripe:'',message:''}
   };
@@ -2167,10 +2272,12 @@ function loadExternal(){
         if(cfg.support) CONFIG.support=cfg.support;
         if(cfg.tabs)    CONFIG.tabs=cfg.tabs;
         if(cfg.password_hash) CONFIG.password_hash=cfg.password_hash;
+        if(typeof cfg.credits==='string') CONFIG.credits=cfg.credits;
       }
     }).catch(function(){/* defaults remain */})
     .finally(function(){
       loadLocalOverrides(); // device-level admin tweaks win for preview
+      applyCredits();
       // 2) data.csv (required)
       fetch('data.csv',{cache:'no-store'}).then(function(r){
         if(!r.ok) throw new Error('HTTP '+r.status);
@@ -2201,6 +2308,7 @@ document.addEventListener('keydown',function(e){
 });
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===document.getElementById('modal'))closeModal();});
 document.getElementById('admin-modal').addEventListener('click',function(e){if(e.target===document.getElementById('admin-modal'))closeAdminModal();});
+
 
 
 </script>
