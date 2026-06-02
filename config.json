@@ -25,8 +25,12 @@
 
   "support_note": "Optional donation page. Provide PayPal.Me and/or Stripe Payment Link URLs. Leave blank to hide buttons. Set tabs.support to true to show the page.",
   "support": {
-    "paypal": "",
-    "stripe": "",
-    "message": ""
+    "paypal": "https://paypal.me/RAravinthan",
+    "stripe": "https://buy.stripe.com/cNidR22519LJ7oM8b79Ve00",
+    "message": "This tool is free to use and always will be.
+
+If you find it useful and would like to support its continued development, any contribution is genuinely appreciated. Donations help cover running costs, maintenance, licences, and the time needed to keep improving the project.
+
+Thank you for your support — it truly helps."
   }
 }
