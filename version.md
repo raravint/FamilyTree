@@ -9,7 +9,6 @@ A running log of changes to the Family Tree application.
 **New features**
 
 - **Recalculate Generations** (Admin) — recomputes every person's generation from the family links. Parents set the generation; people with no parents inherit it from their spouse. Use it after adding a new ancestor at the top of the tree. It updates the on-screen view for review only — Export CSV and re-publish to make it permanent.
-- **Configurable "Presented By"** — the presenter line on the welcome screen (and printed PDFs) is now set in the Admin panel and stored in `config.json`, alongside the existing contributor credits.
 
 **Notes**
 

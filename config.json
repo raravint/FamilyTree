@@ -3,7 +3,7 @@
   "password_hash_note": "SHA-256 of the admin password. Default is the hash of 'Ara12345'. To change it, log in as admin, use Change Password, then Download config.json and re-upload.",
   "password_hash": "d9a96f88da10af3cc482f2691a2b39aa3f84464b432adc36579a4e28db107ef9",
   "credits_note": "Text shown on the welcome screen, directly under 'Presented by Raj Aravinthan'. Use it to credit contributors. For a line break, type \\n (backslash-n) inside the text below.",
-  "credits": "Credits: Rasalingam (Australia), Raghavan (Canada) and growing...",
+  "credits": "Credits: Rasalingam Vaithilingam (Australia), Yathavan Pathmanathan (Canada), Raghavan Eswaralingam (Canada) and growing...",
   "tabs_note": "true = visible to all visitors, false = hidden. You (logged in via the lock button) always see every tab regardless of these settings.",
   "tabs": {
     "tree": false,
@@ -28,5 +28,5 @@
     "stripe": "https://buy.stripe.com/cNidR22519LJ7oM8b79Ve00",
     "message": "This tool is free to use and always will be.\n\nIf you find it useful and would like to support its continued development, any contribution is genuinely appreciated. Donations help cover running costs, maintenance, licences, and the time needed to keep improving the project.\n\nThank you for your support — it truly helps."
   },
-  "presented_by": "Yathavan Pathmanathan (Canada)\\n&\\nRaj Aravinthan (Australia)"
+  "presented_by": "Yathavan & Aravinthan"
 }
