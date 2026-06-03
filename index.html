@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Family Tree">
 <meta name="theme-color" content="#1a1408">
 <meta name="format-detection" content="telephone=no">
-<title>Family Tree V3.0</title>
+<title>Family Tree V3.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Tamil:wght@400;600&family=Noto+Sans+Tamil:wght@400;600&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 
@@ -394,6 +394,24 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
 #support-area{display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden}
 #support-area.on{display:flex}
 .support-scroll{flex:1;overflow-y:auto;width:100%}
+/* VERSION UPDATES PAGE (#5) */
+#version-area{display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden}
+#version-area.on{display:flex}
+.version-scroll{flex:1;overflow-y:auto;padding:28px 24px;max-width:820px;margin:0 auto;width:100%}
+.version-doc{font-size:14px;line-height:1.7;color:var(--tx)}
+.version-doc h1{font-family:'Cinzel',serif;font-size:24px;color:var(--tx);margin:0 0 4px;border-bottom:2px solid var(--gold2);padding-bottom:8px}
+.version-doc h2{font-family:'Cinzel',serif;font-size:18px;color:var(--gold);margin:22px 0 8px}
+.version-doc h3{font-size:15px;font-weight:700;color:var(--tx);margin:16px 0 6px}
+.version-doc p{margin:0 0 12px}
+.version-doc ul,.version-doc ol{margin:0 0 14px 22px}
+.version-doc li{margin-bottom:5px}
+.version-doc code{background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;padding:1px 5px;font-family:Consolas,monospace;font-size:12px}
+.version-doc a{color:var(--gold2)}
+.version-doc blockquote{border-left:3px solid var(--gold2);margin:0 0 12px;padding:6px 14px;background:var(--bg3);color:var(--mu)}
+.version-doc hr{border:none;border-top:1px solid var(--bdr);margin:20px 0}
+/* Gen number labels on nodes (#3) */
+.ngen{display:block;font-size:8px;font-weight:700;color:var(--gold2);letter-spacing:.4px;line-height:1.3}
+.bn-gen{font-size:9px;font-weight:700;color:var(--gold2);letter-spacing:.3px;margin-top:1px}
 
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 640px) {
@@ -458,12 +476,12 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 <!-- LOGIN SCREEN -->
 <div id="login">
   <div class="lc">
-    <div class="lt">Family Tree V3.0</div>
+    <div class="lt">Family Tree V3.3</div>
     <div class="lta">எமது குடும்ப விருட்சம்</div>
-    <div class="lv">VERSION 3.0</div>
+    <div class="lv">VERSION 3.3</div>
     <div class="ldiv"></div>
     <div style="font-size:9px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:5px">Presented by</div>
-    <div class="la-n">Raj Aravinthan</div>
+    <div class="la-n" id="welcome-presentedby">Yathavan Pathmanathan (Canada) &amp; Raj Aravinthan (Australia)</div>
     <div class="la-credits" id="welcome-credits" style="font-size:11px;color:var(--gold2);margin-top:8px;line-height:1.6;white-space:pre-line;max-width:380px"></div>
     <button class="lb" onclick="enterApp()">Enter Family Tree</button>
     <div class="sr">
@@ -483,7 +501,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
     <div id="print-credits"></div>
   </div>
   <header>
-    <div class="hb">Family Tree V3.0<small>எமது குடும்ப மரம்</small></div>
+    <div class="hb">Family Tree V3.3<small>எமது குடும்ப மரம்</small></div>
     <div id="admin-badge" class="admin-indicator" style="display:none">🔒 ADMIN</div>
     <div class="tb">
       <div id="tree-controls" style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
@@ -511,6 +529,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
     <button class="tab" id="t-branch" onclick="switchTab('branch')">🧵 Branch View</button>
     <button class="tab" id="t-contact" onclick="switchTab('contact')">✉ Contact Us</button>
     <button class="tab" id="t-help" onclick="switchTab('help')">❔ Help</button>
+    <button class="tab" id="t-version" onclick="switchTab('version')">🆕 Version Updates</button>
     <button class="tab" id="t-support" style="display:none" onclick="switchTab('support')">❤ Support</button>
     <button class="tab" id="t-err" style="display:none" onclick="switchTab('err')">⚠ Validation <span class="tbadge" id="ebadge">0</span></button>
     <button class="tab" id="t-admin" style="display:none" onclick="switchTab('admin')">⚙ Admin</button>
@@ -729,7 +748,8 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
                 <li>When <strong>adding a child</strong> from a person, that person and their spouse are pre-filled as the parents, and the country is copied across — adjust as needed.</li>
                 <li>The <strong>Father, Mother and Spouse</strong> fields are type-to-search: start typing a name and pick from the short list instead of scrolling.</li>
                 <li><strong>Generation</strong> can be set manually to override the value auto-calculated from parents; leave it blank to auto-calculate.</li>
-                <li>On the <strong>Admin</strong> tab you can set the welcome-screen credits text, choose which tabs the public sees, and configure the contact-form email and donation links. After changes, use <strong>Download config.json</strong> and re-upload all files to Netlify to publish for everyone.</li>
+                <li>On the <strong>Admin</strong> tab you can set the <strong>Presented By</strong> line and the welcome-screen credits, choose which tabs the public sees, and configure the contact-form email and donation links. After changes, use <strong>Download config.json</strong> and re-upload all files to publish for everyone.</li>
+                <li><strong>Recalculate Generations</strong> (Admin tab) recomputes everyone's generation from the family links — handy after adding a new ancestor at the top of the tree. It updates the view only; review it, then <strong>Export CSV</strong> and re-upload to publish. Generations don't update automatically when you add a parent, so run this after such a change.</li>
               </ul>
             </div>
           </div>
@@ -739,6 +759,13 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
       <!-- Support tab (visibility controlled by admin) -->
       <div id="support-area">
         <div class="support-scroll" id="support-content"></div>
+      </div>
+
+      <!-- Version Updates tab (reads version.md) -->
+      <div id="version-area">
+        <div class="version-scroll">
+          <div class="version-doc" id="version-content"></div>
+        </div>
       </div>
 
       <!-- Admin tab (admin only) -->
@@ -757,9 +784,12 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <div class="admin-section">
             <div class="admin-section-title">📝 Welcome Screen Text</div>
             <p style="font-size:11px;color:var(--mu);margin-bottom:10px;line-height:1.6">
-              Text shown on the welcome screen, just under "Presented by Raj Aravinthan". Use it to credit contributors. Line breaks are kept. Save, then Download config.json and re-upload to publish for all.
+              Set the presenter line and the contributor credits shown on the welcome screen (and on printed PDFs). Save, then Download config.json and re-upload to publish for all.
             </p>
-            <div class="fr"><textarea id="a-credits" rows="3" placeholder="e.g. Compiled with contributions from&#10;Anu, Mala &amp; the extended family"></textarea></div>
+            <div class="fr"><label>Presented By (main line under the title)</label>
+              <input type="text" id="a-presentedby" placeholder="e.g. Name (Country) &amp; Name (Country)"></div>
+            <div class="fr"><label>Credits (shown beneath, optional — line breaks kept)</label>
+              <textarea id="a-credits" rows="3" placeholder="e.g. Compiled with contributions from&#10;Anu, Mala &amp; the extended family"></textarea></div>
             <button class="btn btn-dk" onclick="saveCredits()">Save Welcome Text</button>
           </div>
           <div class="admin-section">
@@ -771,6 +801,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
             <div class="chk-row"><input type="checkbox" id="cfg-tab-tree"><label for="cfg-tab-tree" style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:400;cursor:pointer">Show Family Tree tab</label></div>
             <div class="chk-row"><input type="checkbox" id="cfg-tab-validation"><label for="cfg-tab-validation" style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:400;cursor:pointer">Show Validation tab</label></div>
             <div class="chk-row"><input type="checkbox" id="cfg-tab-support"><label for="cfg-tab-support" style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:400;cursor:pointer">Show Donation / Support tab</label></div>
+            <div class="chk-row"><input type="checkbox" id="cfg-tab-version"><label for="cfg-tab-version" style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:400;cursor:pointer">Show Version Updates tab</label></div>
             <div class="chk-row"><input type="checkbox" id="cfg-tab-admin"><label for="cfg-tab-admin" style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:400;cursor:pointer">Show Admin tab to the public</label></div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
               <button class="btn btn-dk" onclick="saveTabToggles()">Apply (this device)</button>
@@ -827,6 +858,13 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
             </p>
           </div>
 
+          <div class="admin-section">
+            <div class="admin-section-title">↻ Generations</div>
+            <p style="font-size:11px;color:var(--mu);margin-bottom:10px;line-height:1.6">
+              Recompute every person's generation from the family links. Parents set the generation; people with no parents inherit from their spouse. Useful after adding a new ancestor at the top of the tree. This updates the on-screen view only — review it, then <strong>Export CSV</strong> and publish to make it permanent. Any genuine cross-generation marriages will appear in the Validation tab.
+            </p>
+            <button class="btn btn-dk" onclick="recalcGenerations()">↻ Recalculate Generations</button>
+          </div>
           <div class="admin-section">
             <div class="admin-section-title">💾 Backup &amp; Export</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -958,6 +996,8 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 <script>
 
 
+
+
 var DATA = [];
 var ERRORS = [];
 var INIT_ERRORS = [];
@@ -972,12 +1012,17 @@ var CONFIG_KEY = 'ftv2_config';
 var CONFIG = {};
 
 // V3: config is loaded from external config.json (see loadExternal). These are fallback defaults.
-function applyCredits(){ var el=document.getElementById('welcome-credits'); if(el) el.textContent=CONFIG.credits||''; }
+var DEFAULT_PRESENTED_BY='Yathavan Pathmanathan (Canada) & Raj Aravinthan (Australia)';
+function applyCredits(){
+  var el=document.getElementById('welcome-credits'); if(el) el.textContent=CONFIG.credits||'';
+  var pb=document.getElementById('welcome-presentedby'); if(pb) pb.innerHTML=esc(CONFIG.presented_by||DEFAULT_PRESENTED_BY);
+}
 function defaultConfig(){
   return {
     emailjs:{service:'',template:'',key:'',email:''},
     support:{paypal:'',stripe:'',message:''},
-    tabs:{tree:false,branch:true,contact:true,help:true,validation:false,support:false,admin:false},
+    tabs:{tree:false,branch:true,contact:true,help:true,version:true,validation:false,support:false,admin:false},
+    presented_by:DEFAULT_PRESENTED_BY,
     credits:''
   };
 }
@@ -989,6 +1034,7 @@ function loadLocalOverrides(){
     if(o.support) CONFIG.support=o.support;
     if(o.tabs) CONFIG.tabs=o.tabs;
     if(typeof o.credits==='string') CONFIG.credits=o.credits;
+    if(typeof o.presented_by==='string') CONFIG.presented_by=o.presented_by;
   } } catch(e) {}
 }
 
@@ -1329,6 +1375,7 @@ function render(){
       (ctry?'<span class="nfl" title="'+ctry.label+'">'+ctry.flag+'</span>':'')+
       '<span class="nna" title="'+esc(p.name)+'">'+esc(p.name)+'</span>'+
       (p.tamil?'<span class="ntm">'+esc(p.tamil)+'</span>':'')+
+      '<span class="ngen">Gen '+((p.gen||0)+1)+'</span>'+
       (showLife?'<span class="nli">'+esc(showLife)+'</span>':'')+
       (showLoc?'<span class="nlo">'+esc(showLoc)+'</span>':'')+
       (ic&&hk?'<span class="ncol-badge">&#x25B8; '+kc+' hidden</span>':'')+
@@ -1403,7 +1450,7 @@ function showPanel(id){
     h+='<div class="pbs"><button class="btn" onclick="jumpTo(\''+id+'\')">&#x2295; Centre</button>';
     h+='<button class="btn" onclick="togCol(\''+id+'\')">'+( col.has(id)?'&#x25b8; Expand':'&#x25be; Collapse')+'</button>';
   }
-  if(ADMIN_MODE){h+='<button class="btn btn-gr" onclick="openEdit(\''+id+'\')">&#x270e; Edit</button><button class="btn" onclick="openAdd(\''+id+'\')">+ Child</button>';}
+  if(ADMIN_MODE){h+='<button class="btn btn-gr" onclick="openEdit(\''+id+'\')">&#x270e; Edit</button><button class="btn" onclick="openAdd(\''+id+'\')">+ Child</button><button class="btn" onclick="openAddPartner(\''+id+'\')">+ Partner</button>';}
   h+='</div>';
 
   // Relationship finder -- ALWAYS available (type-to-filter search)
@@ -1549,12 +1596,50 @@ function switchTab(t){
   if(t==='branch'){renderBranch();setTimeout(function(){document.getElementById('branch-search').focus();},100);}
   document.getElementById('help-area').classList.toggle('on',t==='help');
   document.getElementById('support-area').classList.toggle('on',t==='support');
-  ['t-help','t-support'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.toggle('on',id==='t-'+t);});
+  document.getElementById('version-area').classList.toggle('on',t==='version');
+  ['t-help','t-support','t-version'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.toggle('on',id==='t-'+t);});
   if(t==='contact')initContactForm();
   if(t==='admin'){loadAdminConfig();populateAdminStats();}
   if(t==='support')renderSupport();
+  if(t==='version')loadVersionDoc();
   // Main search + tree-only controls belong to the Family Tree tab only
   var treeCtrls=document.getElementById('tree-controls'); if(treeCtrls) treeCtrls.style.display=(t==='tree')?'flex':'none';
+}
+// #5 Version Updates: fetch version.md and render as rich text (self-contained Markdown renderer)
+var versionLoaded=false;
+function loadVersionDoc(force){
+  if(versionLoaded&&!force)return;
+  var box=document.getElementById('version-content');
+  if(box) box.innerHTML='<p style="color:var(--mu);font-style:italic">Loading version notes\u2026</p>';
+  fetch('version.md',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text();})
+    .then(function(md){ if(box) box.innerHTML=renderMarkdown(md); versionLoaded=true; })
+    .catch(function(e){ if(box) box.innerHTML='<p style="color:var(--mu)">No version notes available yet. Create a <code>version.md</code> file alongside index.html. ('+esc(e.message)+')</p>'; });
+}
+// Minimal, safe Markdown -> HTML (headings, bold, italic, code, lists, links, hr, blockquote)
+function renderMarkdown(md){
+  function escaped(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  var lines=escaped(md.replace(/\r\n/g,'\n')).split('\n');
+  var out=[],i=0;
+  function inline(s){
+    return s
+      .replace(/`([^`]+)`/g,'<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+      .replace(/(^|[^*])\*([^*]+)\*/g,'$1<em>$2</em>')
+      .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  }
+  while(i<lines.length){
+    var ln=lines[i];
+    if(/^\s*$/.test(ln)){i++;continue;}
+    if(/^#{1,6}\s/.test(ln)){var lvl=ln.match(/^#+/)[0].length;out.push('<h'+lvl+'>'+inline(ln.replace(/^#+\s*/,''))+'</h'+lvl+'>');i++;continue;}
+    if(/^\s*([-*])\s+/.test(ln)){var items=[];while(i<lines.length&&/^\s*([-*])\s+/.test(lines[i])){items.push('<li>'+inline(lines[i].replace(/^\s*[-*]\s+/,''))+'</li>');i++;}out.push('<ul>'+items.join('')+'</ul>');continue;}
+    if(/^\s*\d+\.\s+/.test(ln)){var oi=[];while(i<lines.length&&/^\s*\d+\.\s+/.test(lines[i])){oi.push('<li>'+inline(lines[i].replace(/^\s*\d+\.\s+/,''))+'</li>');i++;}out.push('<ol>'+oi.join('')+'</ol>');continue;}
+    if(/^\s*>\s?/.test(ln)){out.push('<blockquote>'+inline(ln.replace(/^\s*>\s?/,''))+'</blockquote>');i++;continue;}
+    if(/^\s*(---|\*\*\*|___)\s*$/.test(ln)){out.push('<hr>');i++;continue;}
+    var para=[ln];i++;
+    while(i<lines.length&&!/^\s*$/.test(lines[i])&&!/^#{1,6}\s/.test(lines[i])&&!/^\s*([-*]|\d+\.)\s+/.test(lines[i])&&!/^\s*>/.test(lines[i])){para.push(lines[i]);i++;}
+    out.push('<p>'+inline(para.join(' '))+'</p>');
+  }
+  return out.join('\n');
 }
 
 // ---- SEARCH ----
@@ -1620,7 +1705,7 @@ function renderBranch(){
   if(!p){container.innerHTML='<div style="color:var(--mu);padding:20px">Person not found</div>';if(leg)leg.style.display='none';return;}
   container.innerHTML=buildBranchHTML(p,0);
   document.getElementById('branch-print-btn').style.display='inline-flex';
-  document.getElementById('branch-export-btn').style.display='inline-flex';
+  document.getElementById('branch-export-btn').style.display=ADMIN_MODE?'inline-flex':'none';
   if(leg)leg.style.display='block';
 }
 
@@ -1635,6 +1720,7 @@ function mkBNode(person,isRoot){
     '<div style="display:flex;align-items:center;gap:4px">'+(pc?'<span class="bn-flag" title="'+pc.label+'">'+pc.flag+'</span>':'')+photoHtml+'</div></div>'+
     '<div class="bn-name">'+esc(person.name)+'</div>'+
     (person.tamil?'<div class="bn-tam">'+esc(person.tamil)+'</div>':'')+
+    '<div class="bn-gen">Gen '+((person.gen||0)+1)+'</div>'+
     (privPl?'<div class="bn-life">'+esc(privPl)+'</div>':'')+
     (privLoc?'<div class="bn-loc">'+esc(privLoc)+'</div>':'')+
     (person.dna&&person.dna.length?'<div class="bn-dna">'+dnaBadgesBn(person.dna)+'</div>':'')+
@@ -1760,7 +1846,7 @@ function preparePrintFooter(){
   }
   if(cr){
     var credits=(CONFIG.credits||'').trim();
-    cr.innerHTML='<div class="pc-by">Presented by Raj Aravinthan</div>'+
+    cr.innerHTML='<div class="pc-by">Presented by '+esc(CONFIG.presented_by||DEFAULT_PRESENTED_BY)+'</div>'+
       (credits?'<div class="pc-cr">'+esc(credits)+'</div>':'')+
       '<div style="font-size:8px;color:#999;margin-top:2px">&copy; 2026 Raj Aravinthan &middot; All Rights Reserved</div>';
   }
@@ -2009,6 +2095,24 @@ function openAdd(pId){
   }
   document.getElementById('modal').classList.add('open');setTimeout(function(){document.getElementById('f-name').focus();},100);
 }
+// #1 Add a PARTNER (spouse) of the clicked person: same generation, country copied, no parents, spouse linked
+function openAddPartner(pId){
+  if(!ADMIN_MODE)return;
+  document.getElementById('modal-title').textContent='Add Partner';document.getElementById('f-id').value='';
+  ['f-name','f-tamil','f-dob','f-dod','f-pob','f-loc','f-photo','f-notes'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('f-gender').value='m';document.getElementById('f-country').value='';document.getElementById('f-deceased').checked=false;
+  document.getElementById('f-gen').value='';
+  document.getElementById('del-btn').style.display='none';setDnaCheckboxes([]);popSels(null);
+  clearPickers();
+  var per=byId[pId];
+  if(per){
+    setPicker('spouse',per.id);                 // new person's spouse = clicked person
+    if(per.country) document.getElementById('f-country').value=per.country;  // same country
+    document.getElementById('f-gen').value=(per.gen||0)+1;  // same generation (1-based display)
+    document.getElementById('f-gender').value=(per.gender==='m')?'f':'m';    // opposite gender as a sensible default
+  }
+  document.getElementById('modal').classList.add('open');setTimeout(function(){document.getElementById('f-name').focus();},100);
+}
 function openEdit(id){
   if(!ADMIN_MODE)return;
   var p=byId[id];if(!p)return;
@@ -2106,6 +2210,53 @@ function exportErrCSV(){var cols=['type','severity','person_name','tamil','detai
 
 // ---- CSV EXPORT/IMPORT ----
 var CCOLS=['id','name','tamil','gender','dob','dod','pob','location','country','deceased','photo_url','dna','notes','father_id','mother_id','spouse_id','spouse2_id','gen'];
+// #Recalculate Generations: derive every person's generation from parent links (parents win),
+// with spouse inheritance only for people who have no parent path. Preview only - admin exports to publish.
+function recalcGenerations(){
+  if(!ADMIN_MODE)return;
+  if(!confirm('Recalculate every person\u2019s Generation from the family links?\n\nParents determine generation; people with no parents inherit from their spouse. This updates the view so you can review it. Nothing is saved until you Export CSV and publish.\n\nContinue?'))return;
+  function hasParent(p){return !!((p.father_id&&byId[p.father_id])||(p.mother_id&&byId[p.mother_id]));}
+  var gen={};
+  // 1. seed roots: no parents and no parented-spouse -> gen 0
+  DATA.forEach(function(p){
+    var sp=byId[p.spouse_id||'']||byId[p.spouse2_id||''];
+    if(!hasParent(p)&&!(sp&&hasParent(sp))) gen[p.id]=0;
+  });
+  // 2. parent propagation to fixpoint (monotonic -> always terminates)
+  var guard=0;
+  while(guard++<1000){
+    var changed=false;
+    DATA.forEach(function(p){
+      var pg=[];
+      if(p.father_id&&gen[p.father_id]!=null)pg.push(gen[p.father_id]+1);
+      if(p.mother_id&&gen[p.mother_id]!=null)pg.push(gen[p.mother_id]+1);
+      if(pg.length){var v=Math.max.apply(null,pg);if(gen[p.id]!==v){gen[p.id]=v;changed=true;}}
+    });
+    if(!changed)break;
+  }
+  // 3. spouse fallback for people still without a generation (repeat for spouse-of-spouse chains)
+  for(var k=0;k<20;k++){
+    var ch=false;
+    DATA.forEach(function(p){
+      if(gen[p.id]!=null)return;
+      var s1=p.spouse_id,s2=p.spouse2_id;
+      if(s1&&gen[s1]!=null){gen[p.id]=gen[s1];ch=true;}
+      else if(s2&&gen[s2]!=null){gen[p.id]=gen[s2];ch=true;}
+    });
+    if(!ch)break;
+  }
+  // 4. anyone still unresolved keeps their current gen
+  var changedCount=0;
+  DATA.forEach(function(p){
+    var ng=(gen[p.id]!=null)?gen[p.id]:(p.gen||0);
+    if(ng!==p.gen)changedCount++;
+    p.gen=ng;
+  });
+  reIdx();runVal();
+  if(selId)showPanel(selId);
+  if(curTab==='tree')render(); else if(curTab==='branch')renderBranch();
+  toast('Generations recalculated \u2014 '+changedCount+' changed. Review, then Export CSV to publish.');
+}
 function doExportCSV(){
   function qv(v){if(Array.isArray(v))v=v.join(';');var s=String(v!=null?v:'');return(s.indexOf(',')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0)?'"'+s.replace(/"/g,'""')+'"':s;}
   var rows=DATA.map(function(p){return CCOLS.map(function(c){return qv(p[c]);}).join(',');});
@@ -2203,6 +2354,7 @@ function applyTabVisibility() {
   vis('t-branch',     t.branch);
   vis('t-contact',    t.contact);
   vis('t-help',       t.help);
+  vis('t-version',    t.version!==false);  // Version Updates: visible by default
   vis('t-support',    t.support);
   // validation and admin tabs are admin-only tools: shown only in admin mode (config flag lets owner expose validation publicly if ever wanted)
   vis('t-err',        t.validation);
@@ -2211,7 +2363,7 @@ function applyTabVisibility() {
   ensureValidTab();
 }
 function ensureValidTab(){
-  var order=['tree','branch','contact','help','support','err','admin'];
+  var order=['tree','branch','contact','help','version','support','err','admin'];
   var cur=document.getElementById('t-'+(curTab==='err'?'err':curTab));
   if(cur && cur.style.display!=='none') return;
   for(var i=0;i<order.length;i++){
@@ -2262,14 +2414,15 @@ function saveSupportConfig() {
   toast('Donation settings saved (this device). Use Download config.json to publish for all.');
 }
 
-function saveCredits(){ CONFIG.credits=document.getElementById('a-credits').value; persistLocal(); applyCredits(); toast('Welcome text saved (this device). Use Download config.json to publish for all.'); }
-function loadCreditsField(){ var el=document.getElementById('a-credits'); if(el) el.value=CONFIG.credits||''; }
+function saveCredits(){ CONFIG.credits=document.getElementById('a-credits').value; var pb=document.getElementById('a-presentedby'); if(pb) CONFIG.presented_by=pb.value.trim()||DEFAULT_PRESENTED_BY; persistLocal(); applyCredits(); toast('Welcome text saved (this device). Use Download config.json to publish for all.'); }
+function loadCreditsField(){ var el=document.getElementById('a-credits'); if(el) el.value=CONFIG.credits||''; var pb=document.getElementById('a-presentedby'); if(pb) pb.value=CONFIG.presented_by||DEFAULT_PRESENTED_BY; }
 // ---- TAB VISIBILITY TOGGLES (admin) ----
 function loadTabToggles(){
   var t = CONFIG.tabs || {};
   [['cfg-tab-tree','tree'],['cfg-tab-validation','validation'],['cfg-tab-support','support'],['cfg-tab-admin','admin']].forEach(function(p){
     var el=document.getElementById(p[0]); if(el) el.checked = !!t[p[1]];
   });
+  var vt=document.getElementById('cfg-tab-version'); if(vt) vt.checked = (t.version!==false);
 }
 function saveTabToggles(){
   if(!CONFIG.tabs) CONFIG.tabs = {};
@@ -2277,6 +2430,7 @@ function saveTabToggles(){
   CONFIG.tabs.validation = document.getElementById('cfg-tab-validation').checked;
   CONFIG.tabs.support    = document.getElementById('cfg-tab-support').checked;
   CONFIG.tabs.admin      = document.getElementById('cfg-tab-admin').checked;
+  var vt=document.getElementById('cfg-tab-version'); if(vt) CONFIG.tabs.version = vt.checked;
   // branch/contact/help stay visible by design
   CONFIG.tabs.branch = true; CONFIG.tabs.contact = true; CONFIG.tabs.help = true;
   persistLocal();
@@ -2284,7 +2438,7 @@ function saveTabToggles(){
   toast('Tab settings updated (this device). Use Download config.json to publish for all.');
 }
 function persistLocal(){
-  try{ localStorage.setItem(CONFIG_KEY, JSON.stringify({emailjs:CONFIG.emailjs,support:CONFIG.support,tabs:CONFIG.tabs,credits:CONFIG.credits})); }catch(e){}
+  try{ localStorage.setItem(CONFIG_KEY, JSON.stringify({emailjs:CONFIG.emailjs,support:CONFIG.support,tabs:CONFIG.tabs,credits:CONFIG.credits,presented_by:CONFIG.presented_by})); }catch(e){}
 }
 // Build a clean config.json reflecting current settings, for re-upload to Netlify
 function downloadConfigJSON(){
@@ -2294,10 +2448,12 @@ function downloadConfigJSON(){
     "tabs": {
       tree: !!(CONFIG.tabs&&CONFIG.tabs.tree),
       branch:true, contact:true, help:true,
+      version: !(CONFIG.tabs&&CONFIG.tabs.version===false),
       validation: !!(CONFIG.tabs&&CONFIG.tabs.validation),
       support: !!(CONFIG.tabs&&CONFIG.tabs.support),
       admin: !!(CONFIG.tabs&&CONFIG.tabs.admin)
     },
+    "presented_by": CONFIG.presented_by||DEFAULT_PRESENTED_BY,
     "credits": CONFIG.credits||'',
     "emailjs": CONFIG.emailjs||{service:'',template:'',key:'',email:''},
     "support": CONFIG.support||{paypal:'',stripe:'',message:''}
@@ -2318,7 +2474,7 @@ function enterApp(){
     document.getElementById('app').style.display='flex';
     applyTabVisibility();
     render();setTimeout(fitV,100);
-    toast('Family Tree V3.0 -- '+DATA.length+' members loaded');
+    toast('Family Tree V3.3 -- '+DATA.length+' members loaded');
   },500);
 }
 
@@ -2407,6 +2563,7 @@ function loadExternal(){
         if(cfg.tabs)    CONFIG.tabs=cfg.tabs;
         if(cfg.password_hash) CONFIG.password_hash=cfg.password_hash;
         if(typeof cfg.credits==='string') CONFIG.credits=cfg.credits;
+        if(typeof cfg.presented_by==='string') CONFIG.presented_by=cfg.presented_by;
       }
     }).catch(function(){/* defaults remain */})
     .finally(function(){
@@ -2442,6 +2599,8 @@ document.addEventListener('keydown',function(e){
 });
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===document.getElementById('modal'))closeModal();});
 document.getElementById('admin-modal').addEventListener('click',function(e){if(e.target===document.getElementById('admin-modal'))closeAdminModal();});
+
+
 
 
 
