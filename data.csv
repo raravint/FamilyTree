@@ -271,7 +271,6 @@ p555,Ananthamayil(Appu),ஆனந்தமயில்,m,,,,,LK,FALSE,,,,p310,p3
 p550,Rathika,ராதிகா,f,,,,,LK,FALSE,,,,,,p555,,4
 p816,Sinthuja,சிந்துஜா,f,,,,,LK,FALSE,,,,p555,p550,p725,,5
 p810,Sangeetha,சங்கீதா,f,,,,,AU,FALSE,,,,,,p809,,5
-p818,Girish,கிரிஷ்,m,,,,,LK,FALSE,,,,,p816,,,6
 p820,Dinesh,தினேஷ்,m,,,,,LK,FALSE,,,,p555,p550,p1780648712987,,5
 p819,Nilakshan,நிலக்சன்,m,,,,,LK,FALSE,,,,p555,p550,p1780648757135,,5
 p821,Neeraja,நீரஜா,f,,,,,LK,FALSE,,,,p555,p550,p1780648801128,,5
@@ -326,8 +325,7 @@ p1780647854210,Haran,கரண்,m,,,,,GB,FALSE,,,,p786,p787,,,6
 p1780647951457,Veeradharshini,வீரதர்ஷினி,f,,,,,GB,FALSE,,,,,,p285,,5
 p1780648067299,Kiruthik,ஹிருத்திக்,m,,,,,LK,FALSE,,,,p730,p731,,,6
 p1780648236773,Jeyanthi,ஜெயந்தி,f,,,,,GB,FALSE,,,,,,p617,,4
-p1780648305153,Ruby,ரூபி,f,,,,,GB,FALSE,,,,,,p765,,0
-p1780648618520,Daughts tbc,,f,,,,,LK,FALSE,,,,p725,p816,,,6
+p1780648305153,Ruby,ரூபி,f,,,,,GB,FALSE,,,,,,p788,,5
 p1780648656311,Vinopa,வினோபா,m,,,,,LK,FALSE,,,,,,p395,,5
 p1780648712987,Atchara Rishwini,அட்சரா ரிஷிவினி,f,,,,,GB,FALSE,,,,,,p820,,5
 p1780648757135,Thiviya,திவியா,f,,,,,LK,FALSE,,,,,,p819,,5
