@@ -304,11 +304,11 @@ p618,Sivachandran,சிவச்சந்திரன்,m,,,,,CA,FALSE,,,,,,p6
 p626,Shivani,ஷிவானி,f,,,,,CA,FALSE,,,,p618,p624,,,5
 p625,Shyam,ஷியாம்,m,,,,,CA,FALSE,,,,p618,p624,,,5
 p619,Ramesh,ரமேஷ்,m,,,,,AU,FALSE,,,,p503,p502,p620,,4
-p620,Rupini,ரூபினி,f,,,,,AU,FALSE,,,,,,p619,,4
+p620,Rubini,ரூபினி,f,,,,,AU,FALSE,,,,,,p619,,4
 p628,Karthik,கார்த்திக்,m,,,,,AU,FALSE,,,,p619,p620,,,5
-p627,Vathsun,வத்சன்,m,,,,,AU,FALSE,,,,p619,p620,,,5
+p627,Wathsun,வத்சன்,m,,,,,AU,FALSE,,,,p619,p620,,,5
 p617,Srinivasan,ஸ்ரீநிவாசன்,m,,,,,GB,FALSE,,,,p503,p502,p1780648236773,,4
-p499,Rishi,ரிஷி,m,,,,,GB,FALSE,,,,p617,,,,5
+p499,Ridshi,ரிஷி,m,,,,,GB,FALSE,,,,p617,,,,5
 p500,Sruthi,சுருதி,f,,,,,GB,FALSE,,,,p617,,,,5
 p622,Ragunathan,ரகுநாதன்,m,,,,,CA,FALSE,,,,p503,p502,p621,,4
 p621,Abirami,அபிராமி,f,,,,,CA,FALSE,,,,,,p622,,4
@@ -324,7 +324,7 @@ p1780647786379,Umesh,உமேஷ்,m,,,,,CA,FALSE,,,,,,p679,,5
 p1780647854210,Haran,கரண்,m,,,,,GB,FALSE,,,,p786,p787,,,6
 p1780647951457,Veeradharshini,வீரதர்ஷினி,f,,,,,GB,FALSE,,,,,,p285,,5
 p1780648067299,Kiruthik,ஹிருத்திக்,m,,,,,LK,FALSE,,,,p730,p731,,,6
-p1780648236773,Jeyanthi,ஜெயந்தி,f,,,,,GB,FALSE,,,,,,p617,,4
+p1780648236773,Jeyanthy,ஜெயந்தி,f,,,,,GB,FALSE,,,,,,p617,,4
 p1780648305153,Ruby,ரூபி,f,,,,,GB,FALSE,,,,,,p788,,5
 p1780648656311,Vinopa,வினோபா,m,,,,,LK,FALSE,,,,,,p395,,5
 p1780648712987,Atchara Rishwini,அட்சரா ரிஷிவினி,f,,,,,GB,FALSE,,,,,,p820,,5
