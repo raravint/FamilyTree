@@ -180,10 +180,10 @@ p944,Kavitha,கவிதா,f,,,,,AU,FALSE,,,,p507,p506,p945,,5
 p945,Ragu,ரகு,m,,,,,AU,FALSE,,,,,,p944,,5
 p947,Divesh,திவேஷ்,m,,,,,AU,FALSE,,,,p945,p944,,,6
 p948,Dilshan,டில்ஷான்,m,,,,,AU,FALSE,,,,p945,p944,,,6
-p946,Sutharshan (Theepan),சுதர்ஷன் (தீபன்),m,,,,,AU,FALSE,,,,p507,p506,p171,,5
+p946,Sutharshan (Theepan),சுதர்ஷன் (தீபன்),m,,,,,AU,FALSE,,,,,,p171,,5
 p171,Mayuri,மயூரி,f,,,,,AU,FALSE,,,,p512,p201,p946,,5
-p965,Mayan,மாயன்,m,,,,,AU,FALSE,,,,p946,,,,6
-p966,Nilan,நிலன்,f,,,,,AU,FALSE,,,,p946,,,,6
+p965,Mayan,மாயன்,m,,,,,AU,FALSE,,,,p1780798188227,,,,6
+p966,Nilan,நிலன்,m,,,,,AU,FALSE,,,,p1780798188227,,,,6
 p959,Krishnavijayal,கிருஷ்ணவிஜயாள்,f,,,,,GB,FALSE,,,,p501,p410,p960,,4
 p960,Kulenthiran,குலேந்திரன்,m,,,,,GB,FALSE,,,,,,p959,,4
 p962,Karthika,கார்திகா,f,,,,,GB,FALSE,,,,p960,p959,,,5
@@ -336,3 +336,4 @@ p1780649272128,Giriesh,கிறிஸஹ்,m,,,,,LK,FALSE,,,,p725,p816,,,6
 p1780649301148,Jashritha,ஜாஸ்ரிதா,f,,,,,LK,FALSE,,,,p725,p816,,,6
 p1780649362763,Keerthi,கீர்த்தி,f,,,,,LK,FALSE,,,,p820,p1780648712987,,,6
 p1780797173292,Iniya,இனியா,f,,,,,AU,FALSE,,,,p946,p171,,,6
+p1780798188227,Theepan,தீபன்,m,,,,,AU,FALSE,,,,p507,p506,,,5
