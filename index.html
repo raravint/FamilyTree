@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Family Tree">
 <meta name="theme-color" content="#1a1408">
 <meta name="format-detection" content="telephone=no">
-<title>Family Tree V3.4</title>
+<title>Family Tree V3.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Tamil:wght@400;600&family=Noto+Sans+Tamil:wght@400;600&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 
@@ -485,9 +485,9 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 <!-- LOGIN SCREEN -->
 <div id="login">
   <div class="lc">
-    <div class="lt">Family Tree V3.4</div>
+    <div class="lt">Family Tree V3.5</div>
     <div class="lta">எமது குடும்ப விருட்சம்</div>
-    <div class="lv">VERSION 3.4</div>
+    <div class="lv">VERSION 3.5</div>
     <div class="ldiv"></div>
     <div style="font-size:9px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:5px">Presented by</div>
     <div class="la-n" id="welcome-presentedby">Yathavan Pathmanathan (Canada) &amp; Raj Aravinthan (Australia)</div>
@@ -510,7 +510,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
     <div id="print-credits"></div>
   </div>
   <header>
-    <div class="hb">Family Tree V3.4<small>எமது குடும்ப மரம்</small></div>
+    <div class="hb">Family Tree V3.5<small>எமது குடும்ப மரம்</small></div>
     <div id="admin-badge" class="admin-indicator" style="display:none">🔒 ADMIN</div>
     <div class="tb">
       <div id="tree-controls" style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
@@ -762,7 +762,9 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
                 <li>When <strong>adding a child</strong> from a person, that person and their spouse are pre-filled as the parents, and the country is copied across — adjust as needed.</li>
                 <li>The <strong>Father, Mother and Spouse</strong> fields are type-to-search: start typing a name and pick from the short list instead of scrolling.</li>
                 <li><strong>Generation</strong> can be set manually to override the value auto-calculated from parents; leave it blank to auto-calculate.</li>
-                <li>On the <strong>Admin</strong> tab you can set the <strong>Presented By</strong> line (use a line break for two lines, which also shows on printed PDFs) and the welcome-screen credits, set a <strong>Branch View default person</strong>, choose which tabs the public sees, and configure the contact-form email and donation links. After changes, use <strong>Download config.json</strong> and re-upload all files to publish for everyone.</li>
+                <li>On the <strong>Admin</strong> tab you can set the <strong>Presented By</strong> line (use a line break for two lines, which also shows on printed PDFs) and the welcome-screen credits, set a <strong>Branch View default person</strong>, and configure the contact-form email and donation links.</li>
+                <li><strong>Tab visibility</strong> now covers Family Tree, Contact Us, Help, Version Updates and Support. Branch View is always visible, as it is the main way visitors explore the tree. You always see every tab while logged in.</li>
+                <li><strong>Download config.json</strong> saves every setting (with explanatory notes kept in the file), and <strong>Import Config</strong> restores all of them from a saved file. Re-upload all files to publish changes for everyone.</li>
                 <li><strong>Recalculate Generations</strong> (Admin tab) recomputes everyone's generation from the family links — handy after adding a new ancestor at the top of the tree. It updates the view only; review it, then <strong>Export CSV</strong> and re-upload to publish. Generations don't update automatically when you add a parent, so run this after such a change.</li>
               </ul>
             </div>
@@ -809,7 +811,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <div class="admin-section">
             <div class="admin-section-title">🧵 Branch View Default</div>
             <p style="font-size:11px;color:var(--mu);margin-bottom:10px;line-height:1.6">
-              Optionally set a person that Branch View opens to by default. Pick a generation to narrow the list, then choose the person. Leave as "none" for Branch View to open with the search box ready. Save, then Download config.json and re-upload to publish.
+              Optionally set a person that Branch View opens to by default. Pick a generation to narrow the list, then choose the person. Leave as "none" for Branch View to open with the search box ready. Saved in config.json as the person's <strong>id</strong> (e.g. <code>p417</code>); an exact, unique person name also works if you edit the file by hand. Save, then Download config.json and re-upload to publish.
             </p>
             <div class="fr"><div class="row2">
               <div><label>Generation filter</label><select id="a-bd-gen" onchange="bdFillPeople()"></select></div>
@@ -821,9 +823,11 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <div class="admin-section">
             <div class="admin-section-title">🗂 Tab Visibility (Publishing)</div>
             <p style="font-size:11px;color:var(--mu);margin-bottom:12px;line-height:1.6">
-              Choose which tabs the public sees. Branch View, Help and Contact are always visible. You (logged in) always see every tab regardless of these settings.
-              After changing, click <strong>Download config.json</strong> and re-upload it to Netlify to publish the change for all visitors.
+              Choose which tabs the public sees. <strong>Branch View is always visible</strong> — it is the main way visitors explore the tree. You (logged in via the lock button) always see every tab regardless of these settings.
+              After changing, click <strong>Download config.json</strong> and re-upload all files to publish the change for all visitors.
             </p>
+            <div class="chk-row"><input type="checkbox" id="cfg-tab-contact"><label for="cfg-tab-contact" style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:400;cursor:pointer">Show Contact Us tab</label></div>
+            <div class="chk-row"><input type="checkbox" id="cfg-tab-help"><label for="cfg-tab-help" style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:400;cursor:pointer">Show Help tab</label></div>
             <div class="chk-row"><input type="checkbox" id="cfg-tab-tree"><label for="cfg-tab-tree" style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:400;cursor:pointer">Show Family Tree tab</label></div>
             <div class="chk-row"><input type="checkbox" id="cfg-tab-validation"><label for="cfg-tab-validation" style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:400;cursor:pointer">Show Validation tab</label></div>
             <div class="chk-row"><input type="checkbox" id="cfg-tab-support"><label for="cfg-tab-support" style="text-transform:none;letter-spacing:0;font-size:12px;font-weight:400;cursor:pointer">Show Donation / Support tab</label></div>
@@ -1025,6 +1029,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 
 
 
+
 var DATA = [];
 var ERRORS = [];
 var INIT_ERRORS = [];
@@ -1208,8 +1213,19 @@ function importConfig(ev) {
   var file=ev.target.files[0];if(!file)return;
   var r=new FileReader();
   r.onload=function(e){
-    try{var cfg=JSON.parse(e.target.result);if(cfg.emailjs)CONFIG.emailjs=cfg.emailjs;
-      localStorage.setItem(CONFIG_KEY,JSON.stringify(CONFIG));loadAdminConfig();toast('Config imported');}
+    try{
+      var cfg=JSON.parse(e.target.result), got=[];
+      if(cfg.emailjs){CONFIG.emailjs=cfg.emailjs;got.push('email');}
+      if(cfg.support){CONFIG.support=cfg.support;got.push('support');}
+      if(cfg.tabs){CONFIG.tabs=cfg.tabs;CONFIG.tabs.branch=true;got.push('tabs');}
+      if(typeof cfg.credits==='string'){CONFIG.credits=cfg.credits;got.push('credits');}
+      if(typeof cfg.presented_by==='string'){CONFIG.presented_by=cfg.presented_by;got.push('presented by');}
+      if(typeof cfg.branch_default==='string'){CONFIG.branch_default=cfg.branch_default;got.push('branch default');}
+      if(typeof cfg.password_hash==='string'&&cfg.password_hash){localStorage.setItem(STORED_PW_KEY,cfg.password_hash);got.push('password');}
+      persistLocal();
+      applyCredits();applyTabVisibility();loadAdminConfig();
+      toast(got.length?('Config imported: '+got.join(', ')):'Nothing recognised in that file');
+    }
     catch(err){toast('Config error: '+err.message);}
   };
   r.readAsText(file);ev.target.value='';
@@ -1626,10 +1642,13 @@ function switchTab(t){
   });
   if(t==='err')renderErr();
   if(t==='branch'){
-    // #4 apply configured default person the first time Branch View opens (if set and valid)
-    if(!branchRoot && CONFIG.branch_default && byId[CONFIG.branch_default]){
-      branchRoot=CONFIG.branch_default;
-      var bs=document.getElementById('branch-search'); if(bs) bs.value=byId[branchRoot].name;
+    // #4 apply configured default person the first time Branch View opens (if set and resolvable)
+    if(!branchRoot && CONFIG.branch_default){
+      var bd=resolveBranchDefault(CONFIG.branch_default);
+      if(bd){
+        branchRoot=bd.id;
+        var bs=document.getElementById('branch-search'); if(bs) bs.value=bd.name;
+      }
     }
     renderBranch();setTimeout(function(){document.getElementById('branch-search').focus();},100);
   }
@@ -1736,6 +1755,19 @@ document.addEventListener('click',function(e){if(!e.target.closest('.sw'))sddEl.
 
 // ---- BRANCH TAB ----
 var branchRoot=null;
+// Resolve the configured Branch View default. Accepts a person id (recommended, e.g. "p417")
+// or an exact person name. A name that matches more than one person is rejected as ambiguous.
+// Returns the person object, or null with the reason available via resolveBranchDefault.reason
+function resolveBranchDefault(val){
+  resolveBranchDefault.reason='';
+  var v=(val==null?'':String(val)).trim();
+  if(!v){resolveBranchDefault.reason='none';return null;}
+  if(byId[v]) return byId[v];                       // id match (preferred)
+  var hits=DATA.filter(function(p){return (p.name||'').trim()===v;});
+  if(hits.length===1) return hits[0];               // exact, unique name match
+  resolveBranchDefault.reason = hits.length>1 ? 'ambiguous' : 'notfound';
+  return null;
+}
 function renderBranch(){
   var container=document.getElementById('branch-tree');
   var leg=document.getElementById('branch-legend');
@@ -2390,7 +2422,7 @@ function applyTabVisibility() {
   // When admin is logged in, show ALL tabs so the owner can always manage.
   function vis(id, on){ var el=document.getElementById(id); if(el) el.style.display=(ADMIN_MODE||on)?'block':'none'; }
   vis('t-tree',       t.tree);
-  vis('t-branch',     t.branch);
+  vis('t-branch',     true);   // Branch View is always visible to the public
   vis('t-contact',    t.contact);
   vis('t-help',       t.help);
   vis('t-version',    t.version!==false);  // Version Updates: visible by default
@@ -2463,7 +2495,7 @@ function loadBranchDefaultUI(){
   var gk=Object.keys(gens).map(Number).sort(function(a,b){return a-b;});
   gsel.innerHTML='<option value="">All generations</option>'+gk.map(function(g){return '<option value="'+g+'">Gen '+(g+1)+'</option>';}).join('');
   // if a default is set, preselect its gen
-  var cur=CONFIG.branch_default&&byId[CONFIG.branch_default]?byId[CONFIG.branch_default]:null;
+  var cur=resolveBranchDefault(CONFIG.branch_default);
   if(cur){ gsel.value=cur.gen; }
   bdFillPeople();
   var psel=document.getElementById('a-bd-person');
@@ -2481,8 +2513,11 @@ function bdFillPeople(){
 }
 function bdShowCurrent(){
   var el=document.getElementById('a-bd-current'); if(!el)return;
-  var c=CONFIG.branch_default&&byId[CONFIG.branch_default]?byId[CONFIG.branch_default]:null;
-  el.textContent=c?('Current default: '+c.name+' (Gen '+(c.gen+1)+')'):'Current default: none (Branch View opens with search)';
+  var c=resolveBranchDefault(CONFIG.branch_default);
+  if(c){ el.style.color='var(--gold2)'; el.textContent='Current default: '+c.name+' (Gen '+(c.gen+1)+') \u2014 saved as id '+c.id; }
+  else if(resolveBranchDefault.reason==='notfound'){ el.style.color='var(--red)'; el.textContent='\u26a0 Configured default '+JSON.stringify(CONFIG.branch_default)+' was not found in this data file \u2014 Branch View will open with search.'; }
+  else if(resolveBranchDefault.reason==='ambiguous'){ el.style.color='var(--red)'; el.textContent='\u26a0 Configured default '+JSON.stringify(CONFIG.branch_default)+' matches more than one person \u2014 use the person id instead.'; }
+  else { el.style.color='var(--mu)'; el.textContent='Current default: none (Branch View opens with search)'; }
 }
 function saveBranchDefault(){
   var psel=document.getElementById('a-bd-person');
@@ -2498,7 +2533,10 @@ function loadTabToggles(){
   [['cfg-tab-tree','tree'],['cfg-tab-validation','validation'],['cfg-tab-support','support'],['cfg-tab-admin','admin']].forEach(function(p){
     var el=document.getElementById(p[0]); if(el) el.checked = !!t[p[1]];
   });
-  var vt=document.getElementById('cfg-tab-version'); if(vt) vt.checked = (t.version!==false);
+  // default-visible tabs: absent means visible
+  [['cfg-tab-version','version'],['cfg-tab-contact','contact'],['cfg-tab-help','help']].forEach(function(p){
+    var el=document.getElementById(p[0]); if(el) el.checked = (t[p[1]]!==false);
+  });
 }
 function saveTabToggles(){
   if(!CONFIG.tabs) CONFIG.tabs = {};
@@ -2506,9 +2544,10 @@ function saveTabToggles(){
   CONFIG.tabs.validation = document.getElementById('cfg-tab-validation').checked;
   CONFIG.tabs.support    = document.getElementById('cfg-tab-support').checked;
   CONFIG.tabs.admin      = document.getElementById('cfg-tab-admin').checked;
-  var vt=document.getElementById('cfg-tab-version'); if(vt) CONFIG.tabs.version = vt.checked;
-  // branch/contact/help stay visible by design
-  CONFIG.tabs.branch = true; CONFIG.tabs.contact = true; CONFIG.tabs.help = true;
+  [['cfg-tab-version','version'],['cfg-tab-contact','contact'],['cfg-tab-help','help']].forEach(function(p){
+    var el=document.getElementById(p[0]); if(el) CONFIG.tabs[p[1]] = el.checked;
+  });
+  CONFIG.tabs.branch = true;   // Branch View is always visible to the public
   persistLocal();
   applyTabVisibility();
   toast('Tab settings updated (this device). Use Download config.json to publish for all.');
@@ -2518,21 +2557,31 @@ function persistLocal(){
 }
 // Build a clean config.json reflecting current settings, for re-upload to Netlify
 function downloadConfigJSON(){
+  var T=CONFIG.tabs||{};
   var out = {
-    "_README":"Edit this file to control the published Family Tree. Re-upload to Netlify to apply changes for all visitors. Do not rename keys.",
+    "_README":"Edit this file to control the published Family Tree. Re-upload all files to your host to apply changes for every visitor. Do not rename keys.",
+    "password_hash_note":"SHA-256 of the admin password. To change it, log in as admin, use Change Password, then Download config.json and re-upload.",
     "password_hash": getStoredHash(),
-    "tabs": {
-      tree: !!(CONFIG.tabs&&CONFIG.tabs.tree),
-      branch:true, contact:true, help:true,
-      version: !(CONFIG.tabs&&CONFIG.tabs.version===false),
-      validation: !!(CONFIG.tabs&&CONFIG.tabs.validation),
-      support: !!(CONFIG.tabs&&CONFIG.tabs.support),
-      admin: !!(CONFIG.tabs&&CONFIG.tabs.admin)
-    },
+    "presented_by_note":"Main presenter line on the welcome screen and printed PDFs. For a line break, type \\n (backslash-n) inside the text.",
     "presented_by": CONFIG.presented_by||DEFAULT_PRESENTED_BY,
-    "branch_default": CONFIG.branch_default||'',
+    "credits_note":"Text shown on the welcome screen directly under the presenter line. Use it to credit contributors. For a line break, type \\n (backslash-n).",
     "credits": CONFIG.credits||'',
+    "branch_default_note":"Person that Branch View opens to by default. Use the person id from data.csv (e.g. p417). An exact person name also works if it is unique. Leave blank to open with the search box.",
+    "branch_default": CONFIG.branch_default||'',
+    "tabs_note":"true = visible to all visitors, false = hidden. You (logged in via the lock button) always see every tab regardless of these settings.",
+    "tabs": {
+      tree:       !!T.tree,
+      branch:     true,
+      contact:    T.contact!==false,
+      help:       T.help!==false,
+      version:    T.version!==false,
+      validation: !!T.validation,
+      support:    !!T.support,
+      admin:      !!T.admin
+    },
+    "emailjs_note":"Contact form delivery via EmailJS. The public key is safe to expose.",
     "emailjs": CONFIG.emailjs||{service:'',template:'',key:'',email:''},
+    "support_note":"Optional donation page. Provide PayPal.Me and/or Stripe Payment Link URLs. Leave blank to hide buttons. Set tabs.support to true to show the page.",
     "support": CONFIG.support||{paypal:'',stripe:'',message:''}
   };
   var b=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
@@ -2553,7 +2602,7 @@ function enterApp(){
     // #2 On mobile the details panel starts closed so the tree isn't blocked; a node click opens it.
     if(isMobile() && panO){ togglePanel(); }
     render();setTimeout(fitV,100);
-    toast('Family Tree V3.4 -- '+DATA.length+' members loaded');
+    toast('Family Tree V3.5 -- '+DATA.length+' members loaded');
   },500);
 }
 
@@ -2679,6 +2728,7 @@ document.addEventListener('keydown',function(e){
 });
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===document.getElementById('modal'))closeModal();});
 document.getElementById('admin-modal').addEventListener('click',function(e){if(e.target===document.getElementById('admin-modal'))closeAdminModal();});
+
 
 
 

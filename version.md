@@ -4,6 +4,20 @@ A running log of changes to the Family Tree application.
 
 ---
 
+## Version 3.5 — July 2026
+
+**Fixes**
+
+- **Branch View default** now accepts either the person's id (e.g. `p417`) or their exact name, and the Admin picker shows the current selection. If the configured person isn't found, the Admin tab now says so instead of silently ignoring it.
+- **Import Config** now restores every setting — tabs, credits, presenter line, branch default, contact-form email and donation links — instead of only the email settings.
+- **Download config.json** no longer forces the Branch View, Contact and Help tabs back on, and it keeps the explanatory notes inside the file.
+
+**New**
+
+- **Tab visibility** now includes Contact Us and Help, so these can be shown or hidden alongside the existing options. Branch View is always visible, as it is the main way visitors explore the tree.
+
+---
+
 ## Version 3.4 — July 2026
 
 **New features**
