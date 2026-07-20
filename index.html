@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Family Tree">
 <meta name="theme-color" content="#1a1408">
 <meta name="format-detection" content="telephone=no">
-<title>Family Tree V3.3</title>
+<title>Family Tree V3.4</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Tamil:wght@400;600&family=Noto+Sans+Tamil:wght@400;600&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 
@@ -197,9 +197,18 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
 .edge.sb{stroke:var(--gold2);stroke-width:2.5;opacity:1}
 .edge.sd{opacity:.08}
 /* LEGEND + MINIMAP */
-.clegend{position:absolute;bottom:10px;left:10px;background:rgba(255,255,255,.94);
-  border:1px solid var(--bdr);border-radius:5px;padding:7px 11px;font-size:10px;z-index:50;box-shadow:var(--sh)}
+.clegend{position:absolute;bottom:10px;right:10px;background:rgba(255,255,255,.96);
+  border:1px solid var(--bdr);border-radius:5px;padding:7px 11px;font-size:10px;z-index:50;box-shadow:var(--sh);max-height:60vh;overflow-y:auto}
+/* Main tree: sit ABOVE the minimap (minimap is 86px tall at bottom:10px) */
+#cw .clegend{bottom:106px}
+/* Legend header row with collapse toggle */
+.cl-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
 .cl-t{font-family:'Cinzel',serif;font-size:9px;text-transform:uppercase;color:var(--mu);letter-spacing:1px;margin-bottom:5px}
+.cl-hd .cl-t{margin-bottom:0}
+.cl-tog{font-size:10px;color:var(--gold2);border:none;background:none;cursor:pointer;padding:0 2px;line-height:1}
+.clegend.min{padding:5px 10px}
+.clegend.min .cl-body{display:none}
+.clegend.min .cl-t{margin-bottom:0}
 .cl-i{display:flex;align-items:center;gap:4px;margin-bottom:3px;color:var(--mu)}
 .ldot{width:10px;height:10px;border-radius:2px}
 #mmap{position:absolute;bottom:10px;right:10px;width:155px;height:86px;background:rgba(255,255,255,.94);
@@ -420,7 +429,7 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
   .sw { min-width:110px; max-width:none; flex:1 }
   #zl { display:none }
   #mmap { display:none }
-  .clegend { display:none }
+  #cw .clegend { bottom:10px }
   #panel { position:absolute; z-index:90; width:100% !important; max-height:55vh;
             border-right:none; border-bottom:2px solid var(--bdr); box-shadow:var(--sh2) }
   #panel.closed { max-height:0; overflow:hidden; border:none }
@@ -476,9 +485,9 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 <!-- LOGIN SCREEN -->
 <div id="login">
   <div class="lc">
-    <div class="lt">Family Tree V3.3</div>
+    <div class="lt">Family Tree V3.4</div>
     <div class="lta">எமது குடும்ப விருட்சம்</div>
-    <div class="lv">VERSION 3.3</div>
+    <div class="lv">VERSION 3.4</div>
     <div class="ldiv"></div>
     <div style="font-size:9px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:5px">Presented by</div>
     <div class="la-n" id="welcome-presentedby">Yathavan Pathmanathan (Canada) &amp; Raj Aravinthan (Australia)</div>
@@ -501,7 +510,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
     <div id="print-credits"></div>
   </div>
   <header>
-    <div class="hb">Family Tree V3.3<small>எமது குடும்ப மரம்</small></div>
+    <div class="hb">Family Tree V3.4<small>எமது குடும்ப மரம்</small></div>
     <div id="admin-badge" class="admin-indicator" style="display:none">🔒 ADMIN</div>
     <div class="tb">
       <div id="tree-controls" style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
@@ -549,8 +558,9 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <span id="tree-search-hint">Type a name to highlight matches in the tree</span>
         </div>
         <div id="canvas"><svg id="tsvg"></svg></div>
-        <div class="clegend">
-          <div class="cl-t">Legend</div>
+        <div class="clegend min">
+          <div class="cl-hd" onclick="toggleLegend(this)"><span class="cl-t">Legend</span><button class="cl-tog" title="Expand/collapse">&#x25B8;</button></div>
+          <div class="cl-body">
           <div class="cl-i">&#x1F1F1;&#x1F1F0; Sri Lanka</div>
           <div class="cl-i">&#x1F1EC;&#x1F1E7; United Kingdom</div>
           <div class="cl-i">&#x1F1E6;&#x1F1FA; Australia / NZ</div>
@@ -569,6 +579,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#c0392b;color:#fff;padding:1px 3px;border-radius:2px">MH</span> MyHeritage</div>
           <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#1a6b9a;color:#fff;padding:1px 3px;border-radius:2px">FT</span> FamilyTreeDNA</div>
           <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#6d4c41;color:#fff;padding:1px 3px;border-radius:2px">LD</span> LivingDNA</div>
+          </div>
         </div>
         <div id="mmap"><canvas id="mmc" width="155" height="86"></canvas><div id="mmap-vp"></div></div>
         <div id="sb"></div>
@@ -607,8 +618,9 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
             Search for a person above to view their complete family branch
           </div>
         </div>
-        <div class="clegend" id="branch-legend" style="display:none">
-          <div class="cl-t">Legend</div>
+        <div class="clegend min" id="branch-legend" style="display:none">
+          <div class="cl-hd" onclick="toggleLegend(this)"><span class="cl-t">Legend</span><button class="cl-tog" title="Expand/collapse">&#x25B8;</button></div>
+          <div class="cl-body">
           <div class="cl-i">&#x1F1F1;&#x1F1F0; Sri Lanka</div>
           <div class="cl-i">&#x1F1EC;&#x1F1E7; United Kingdom</div>
           <div class="cl-i">&#x1F1E6;&#x1F1FA; Australia / NZ</div>
@@ -625,6 +637,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#c0392b;color:#fff;padding:1px 3px;border-radius:2px">MH</span> MyHeritage</div>
           <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#1a6b9a;color:#fff;padding:1px 3px;border-radius:2px">FT</span> FamilyTreeDNA</div>
           <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#6d4c41;color:#fff;padding:1px 3px;border-radius:2px">LD</span> LivingDNA</div>
+          </div>
         </div>
       </div>
 
@@ -692,7 +705,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
                 <li><strong>Collapse / expand</strong> a person's children using the small <strong>&#x25BE; / &#x25B8;</strong> button at the bottom-right of their box, or by double-clicking the box. A collapsed box shows how many children are hidden.</li>
                 <li><strong>Drag</strong> empty space to move around. <strong>Scroll / pinch</strong> to zoom in and out.</li>
                 <li>Use <strong>&#x2295; All</strong> / <strong>&#x2296; All</strong> to expand or collapse the whole tree.</li>
-                <li>The search box (top of this tab) finds anyone by English or Tamil name; the small map (bottom-right) shows where you are; the legend (bottom-left) explains the flags, colours and DNA badges.</li>
+                <li>The search box (top of this tab) finds anyone by English or Tamil name; the small map (bottom-right) shows where you are; the legend sits at the bottom-right as a small <strong>Legend &#x25B8;</strong> button — click it to expand the flags, colours and DNA key, and click again to tuck it away so it doesn't cover the tree.</li>
                 <li>Use <strong>&#x2398; PDF</strong> (admin) to print or save the tree as a PDF; the legend and the "Presented by" credits are added to the bottom of the page automatically.</li>
               </ul>
             </div>
@@ -721,7 +734,8 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
                 <li><strong>Collapse / expand</strong> any person's children with the <strong>&#x25BE; / &#x25B8;</strong> button on their box. Click the <strong>Siblings</strong> heading to show or hide the list of siblings.</li>
                 <li><strong>&#x2193; Export Branch (CSV)</strong> downloads just this branch — the person, their spouse(s) and all descendants — as <em>branch_data.csv</em>.</li>
                 <li><strong>&#x2398; Print Branch</strong> prints or saves the branch as a PDF (A3 landscape), with the legend and credits at the bottom.</li>
-                <li>The <strong>legend</strong> (bottom-left) explains the flags, colours and DNA badges, the same as on the Family Tree tab.</li>
+                <li>The <strong>legend</strong> sits at the bottom-right as a <strong>Legend &#x25B8;</strong> button you can expand or minimise, the same as on the Family Tree tab.</li>
+                <li>An administrator can set a <strong>default person</strong> so Branch View opens to a chosen family member; otherwise it opens with the search box ready.</li>
               </ul>
             </div>
           </div>
@@ -736,7 +750,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           <div class="help-section">
             <div class="help-q">📱 On Mobile</div>
             <div class="help-a">
-              The tree works on phones and tablets. Use one finger to pan and two fingers to pinch-zoom. Tap a person to open their details. You can add this page to your home screen for an app-like experience.
+              The tree works on phones and tablets. Use one finger to pan and two fingers to pinch-zoom. On a phone the details panel starts closed so you see the whole tree — tap any person to open their details. You can add this page to your home screen for an app-like experience.
             </div>
           </div>
 
@@ -748,7 +762,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
                 <li>When <strong>adding a child</strong> from a person, that person and their spouse are pre-filled as the parents, and the country is copied across — adjust as needed.</li>
                 <li>The <strong>Father, Mother and Spouse</strong> fields are type-to-search: start typing a name and pick from the short list instead of scrolling.</li>
                 <li><strong>Generation</strong> can be set manually to override the value auto-calculated from parents; leave it blank to auto-calculate.</li>
-                <li>On the <strong>Admin</strong> tab you can set the <strong>Presented By</strong> line and the welcome-screen credits, choose which tabs the public sees, and configure the contact-form email and donation links. After changes, use <strong>Download config.json</strong> and re-upload all files to publish for everyone.</li>
+                <li>On the <strong>Admin</strong> tab you can set the <strong>Presented By</strong> line (use a line break for two lines, which also shows on printed PDFs) and the welcome-screen credits, set a <strong>Branch View default person</strong>, choose which tabs the public sees, and configure the contact-form email and donation links. After changes, use <strong>Download config.json</strong> and re-upload all files to publish for everyone.</li>
                 <li><strong>Recalculate Generations</strong> (Admin tab) recomputes everyone's generation from the family links — handy after adding a new ancestor at the top of the tree. It updates the view only; review it, then <strong>Export CSV</strong> and re-upload to publish. Generations don't update automatically when you add a parent, so run this after such a change.</li>
               </ul>
             </div>
@@ -786,11 +800,23 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
             <p style="font-size:11px;color:var(--mu);margin-bottom:10px;line-height:1.6">
               Set the presenter line and the contributor credits shown on the welcome screen (and on printed PDFs). Save, then Download config.json and re-upload to publish for all.
             </p>
-            <div class="fr"><label>Presented By (main line under the title)</label>
-              <input type="text" id="a-presentedby" placeholder="e.g. Name (Country) &amp; Name (Country)"></div>
+            <div class="fr"><label>Presented By (main line under the title — press Enter for a second line)</label>
+              <textarea id="a-presentedby" rows="2" placeholder="e.g. Name (Country) &amp;&#10;Name (Country)"></textarea></div>
             <div class="fr"><label>Credits (shown beneath, optional — line breaks kept)</label>
               <textarea id="a-credits" rows="3" placeholder="e.g. Compiled with contributions from&#10;Anu, Mala &amp; the extended family"></textarea></div>
             <button class="btn btn-dk" onclick="saveCredits()">Save Welcome Text</button>
+          </div>
+          <div class="admin-section">
+            <div class="admin-section-title">🧵 Branch View Default</div>
+            <p style="font-size:11px;color:var(--mu);margin-bottom:10px;line-height:1.6">
+              Optionally set a person that Branch View opens to by default. Pick a generation to narrow the list, then choose the person. Leave as "none" for Branch View to open with the search box ready. Save, then Download config.json and re-upload to publish.
+            </p>
+            <div class="fr"><div class="row2">
+              <div><label>Generation filter</label><select id="a-bd-gen" onchange="bdFillPeople()"></select></div>
+              <div><label>Default person</label><select id="a-bd-person"></select></div>
+            </div></div>
+            <div id="a-bd-current" style="font-size:11px;color:var(--gold2);margin:6px 0 10px"></div>
+            <button class="btn btn-dk" onclick="saveBranchDefault()">Save Branch Default</button>
           </div>
           <div class="admin-section">
             <div class="admin-section-title">🗂 Tab Visibility (Publishing)</div>
@@ -998,6 +1024,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 
 
 
+
 var DATA = [];
 var ERRORS = [];
 var INIT_ERRORS = [];
@@ -1015,7 +1042,7 @@ var CONFIG = {};
 var DEFAULT_PRESENTED_BY='Yathavan Pathmanathan (Canada) & Raj Aravinthan (Australia)';
 function applyCredits(){
   var el=document.getElementById('welcome-credits'); if(el) el.textContent=CONFIG.credits||'';
-  var pb=document.getElementById('welcome-presentedby'); if(pb) pb.innerHTML=esc(CONFIG.presented_by||DEFAULT_PRESENTED_BY);
+  var pb=document.getElementById('welcome-presentedby'); if(pb) pb.innerHTML=esc(CONFIG.presented_by||DEFAULT_PRESENTED_BY).replace(/\n/g,'<br>');
 }
 function defaultConfig(){
   return {
@@ -1023,7 +1050,8 @@ function defaultConfig(){
     support:{paypal:'',stripe:'',message:''},
     tabs:{tree:false,branch:true,contact:true,help:true,version:true,validation:false,support:false,admin:false},
     presented_by:DEFAULT_PRESENTED_BY,
-    credits:''
+    credits:'',
+    branch_default:''
   };
 }
 CONFIG = defaultConfig();
@@ -1035,6 +1063,7 @@ function loadLocalOverrides(){
     if(o.tabs) CONFIG.tabs=o.tabs;
     if(typeof o.credits==='string') CONFIG.credits=o.credits;
     if(typeof o.presented_by==='string') CONFIG.presented_by=o.presented_by;
+    if(typeof o.branch_default==='string') CONFIG.branch_default=o.branch_default;
   } } catch(e) {}
 }
 
@@ -1087,6 +1116,7 @@ function applyAdminMode() {
   loadSupportConfig();
   loadTabToggles();
   loadCreditsField();
+  loadBranchDefaultUI();
   runVal();
   populateAdminStats();
   if(selId) showPanel(selId); else render();
@@ -1387,7 +1417,7 @@ function render(){
   updMM();
 }
 
-function onNC(id){selId=id;render();showPanel(id);}
+function onNC(id){selId=id;render();if(!panO)togglePanel();showPanel(id);}
 function togCol(id){if(!kids(id).length)return;if(col.has(id))col.delete(id);else col.add(id);render();toast((byId[id]||{}).name+': '+(col.has(id)?'collapsed':'expanded'));}
 function expandAll(){col.clear();render();toast('All expanded');}
 function collapseAll(){DATA.forEach(function(p){if(kids(p.id).length>0)col.add(p.id);});roots().forEach(function(r){col.delete(r.id);});render();toast('All collapsed');}
@@ -1397,6 +1427,8 @@ function closeLightbox(){document.getElementById('lightbox').classList.remove('o
 
 // ---- PANEL ----
 var panO=true;
+function toggleLegend(hd){var lg=hd.closest('.clegend');if(!lg)return;var min=lg.classList.toggle('min');var t=hd.querySelector('.cl-tog');if(t)t.innerHTML=min?'\u25B8':'\u25BE';}
+function isMobile(){return window.matchMedia&&window.matchMedia('(max-width:640px)').matches;}
 function togglePanel(){panO=!panO;document.getElementById('panel').classList.toggle('closed',!panO);document.getElementById('pbtn').classList.toggle('on',panO);}
 
 function showPanel(id){
@@ -1593,7 +1625,14 @@ function switchTab(t){
     var el=document.getElementById(id);if(el)el.classList.toggle('on',id==='t-'+t);
   });
   if(t==='err')renderErr();
-  if(t==='branch'){renderBranch();setTimeout(function(){document.getElementById('branch-search').focus();},100);}
+  if(t==='branch'){
+    // #4 apply configured default person the first time Branch View opens (if set and valid)
+    if(!branchRoot && CONFIG.branch_default && byId[CONFIG.branch_default]){
+      branchRoot=CONFIG.branch_default;
+      var bs=document.getElementById('branch-search'); if(bs) bs.value=byId[branchRoot].name;
+    }
+    renderBranch();setTimeout(function(){document.getElementById('branch-search').focus();},100);
+  }
   document.getElementById('help-area').classList.toggle('on',t==='help');
   document.getElementById('support-area').classList.toggle('on',t==='support');
   document.getElementById('version-area').classList.toggle('on',t==='version');
@@ -1846,7 +1885,7 @@ function preparePrintFooter(){
   }
   if(cr){
     var credits=(CONFIG.credits||'').trim();
-    cr.innerHTML='<div class="pc-by">Presented by '+esc(CONFIG.presented_by||DEFAULT_PRESENTED_BY)+'</div>'+
+    cr.innerHTML='<div class="pc-by">Presented by '+esc(CONFIG.presented_by||DEFAULT_PRESENTED_BY).replace(/\n/g,'<br>')+'</div>'+
       (credits?'<div class="pc-cr">'+esc(credits)+'</div>':'')+
       '<div style="font-size:8px;color:#999;margin-top:2px">&copy; 2026 Raj Aravinthan &middot; All Rights Reserved</div>';
   }
@@ -2416,6 +2455,43 @@ function saveSupportConfig() {
 
 function saveCredits(){ CONFIG.credits=document.getElementById('a-credits').value; var pb=document.getElementById('a-presentedby'); if(pb) CONFIG.presented_by=pb.value.trim()||DEFAULT_PRESENTED_BY; persistLocal(); applyCredits(); toast('Welcome text saved (this device). Use Download config.json to publish for all.'); }
 function loadCreditsField(){ var el=document.getElementById('a-credits'); if(el) el.value=CONFIG.credits||''; var pb=document.getElementById('a-presentedby'); if(pb) pb.value=CONFIG.presented_by||DEFAULT_PRESENTED_BY; }
+// #4 Branch default picker: Gen dropdown -> narrowed person selector -> stored id
+function loadBranchDefaultUI(){
+  var gsel=document.getElementById('a-bd-gen'); if(!gsel)return;
+  // populate Gen dropdown from data
+  var gens={}; DATA.forEach(function(p){gens[p.gen]=true;});
+  var gk=Object.keys(gens).map(Number).sort(function(a,b){return a-b;});
+  gsel.innerHTML='<option value="">All generations</option>'+gk.map(function(g){return '<option value="'+g+'">Gen '+(g+1)+'</option>';}).join('');
+  // if a default is set, preselect its gen
+  var cur=CONFIG.branch_default&&byId[CONFIG.branch_default]?byId[CONFIG.branch_default]:null;
+  if(cur){ gsel.value=cur.gen; }
+  bdFillPeople();
+  var psel=document.getElementById('a-bd-person');
+  if(psel&&cur) psel.value=cur.id;
+  bdShowCurrent();
+}
+function bdFillPeople(){
+  var gsel=document.getElementById('a-bd-gen'), psel=document.getElementById('a-bd-person');
+  if(!psel)return;
+  var g=gsel.value;
+  var list=DATA.filter(function(p){return g===''||String(p.gen)===String(g);})
+               .slice().sort(function(a,b){return a.name.localeCompare(b.name);});
+  psel.innerHTML='<option value="">-- none (open with search) --</option>'+
+    list.map(function(p){return '<option value="'+p.id+'">'+esc(p.name)+(p.tamil?' / '+esc(p.tamil):'')+' (Gen '+(p.gen+1)+')</option>';}).join('');
+}
+function bdShowCurrent(){
+  var el=document.getElementById('a-bd-current'); if(!el)return;
+  var c=CONFIG.branch_default&&byId[CONFIG.branch_default]?byId[CONFIG.branch_default]:null;
+  el.textContent=c?('Current default: '+c.name+' (Gen '+(c.gen+1)+')'):'Current default: none (Branch View opens with search)';
+}
+function saveBranchDefault(){
+  var psel=document.getElementById('a-bd-person');
+  var id=psel?psel.value:'';
+  CONFIG.branch_default=id||'';
+  persistLocal();
+  bdShowCurrent();
+  toast(id?('Branch default set to '+byId[id].name+' (this device). Download config.json to publish.'):'Branch default cleared (this device). Download config.json to publish.');
+}
 // ---- TAB VISIBILITY TOGGLES (admin) ----
 function loadTabToggles(){
   var t = CONFIG.tabs || {};
@@ -2438,7 +2514,7 @@ function saveTabToggles(){
   toast('Tab settings updated (this device). Use Download config.json to publish for all.');
 }
 function persistLocal(){
-  try{ localStorage.setItem(CONFIG_KEY, JSON.stringify({emailjs:CONFIG.emailjs,support:CONFIG.support,tabs:CONFIG.tabs,credits:CONFIG.credits,presented_by:CONFIG.presented_by})); }catch(e){}
+  try{ localStorage.setItem(CONFIG_KEY, JSON.stringify({emailjs:CONFIG.emailjs,support:CONFIG.support,tabs:CONFIG.tabs,credits:CONFIG.credits,presented_by:CONFIG.presented_by,branch_default:CONFIG.branch_default})); }catch(e){}
 }
 // Build a clean config.json reflecting current settings, for re-upload to Netlify
 function downloadConfigJSON(){
@@ -2454,6 +2530,7 @@ function downloadConfigJSON(){
       admin: !!(CONFIG.tabs&&CONFIG.tabs.admin)
     },
     "presented_by": CONFIG.presented_by||DEFAULT_PRESENTED_BY,
+    "branch_default": CONFIG.branch_default||'',
     "credits": CONFIG.credits||'',
     "emailjs": CONFIG.emailjs||{service:'',template:'',key:'',email:''},
     "support": CONFIG.support||{paypal:'',stripe:'',message:''}
@@ -2473,8 +2550,10 @@ function enterApp(){
     ls.style.display='none';
     document.getElementById('app').style.display='flex';
     applyTabVisibility();
+    // #2 On mobile the details panel starts closed so the tree isn't blocked; a node click opens it.
+    if(isMobile() && panO){ togglePanel(); }
     render();setTimeout(fitV,100);
-    toast('Family Tree V3.3 -- '+DATA.length+' members loaded');
+    toast('Family Tree V3.4 -- '+DATA.length+' members loaded');
   },500);
 }
 
@@ -2564,6 +2643,7 @@ function loadExternal(){
         if(cfg.password_hash) CONFIG.password_hash=cfg.password_hash;
         if(typeof cfg.credits==='string') CONFIG.credits=cfg.credits;
         if(typeof cfg.presented_by==='string') CONFIG.presented_by=cfg.presented_by;
+        if(typeof cfg.branch_default==='string') CONFIG.branch_default=cfg.branch_default;
       }
     }).catch(function(){/* defaults remain */})
     .finally(function(){
@@ -2599,6 +2679,7 @@ document.addEventListener('keydown',function(e){
 });
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===document.getElementById('modal'))closeModal();});
 document.getElementById('admin-modal').addEventListener('click',function(e){if(e.target===document.getElementById('admin-modal'))closeAdminModal();});
+
 
 
 

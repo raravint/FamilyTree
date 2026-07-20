@@ -4,11 +4,26 @@ A running log of changes to the Family Tree application.
 
 ---
 
+## Version 3.4 — July 2026
+
+**New features**
+
+- **Minimisable legend** — the colour, flag and DNA legend now sits at the bottom-right as a small button you can expand or tuck away, so it no longer covers the tree. Works on both the Family Tree and Branch View tabs.
+- **Branch View default person** — administrators can set a person that Branch View opens to by default (chosen via a generation filter and person selector), or leave it empty to open with the search box.
+- **Multi-line "Presented By"** — the presenter line now supports line breaks, shown on both the welcome screen and printed PDFs.
+
+**Changes**
+
+- On mobile, the details panel now starts closed so the whole tree is visible; tap a person to open their details. On desktop the panel still opens by default.
+
+---
+
 ## Version 3.3 — June 2026
 
 **New features**
 
 - **Recalculate Generations** (Admin) — recomputes every person's generation from the family links. Parents set the generation; people with no parents inherit it from their spouse. Use it after adding a new ancestor at the top of the tree. It updates the on-screen view for review only — Export CSV and re-publish to make it permanent.
+- **Configurable "Presented By"** — the presenter line on the welcome screen (and printed PDFs) is now set in the Admin panel and stored in `config.json`, alongside the existing contributor credits.
 
 **Notes**
 
