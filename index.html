@@ -831,7 +831,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
               Search for a person to see their complete line — <strong>ancestors fanning upward</strong> and <strong>descendants fanning downward</strong>, meeting at the selected person in the middle.
               <ul>
                 <li>The <strong>selected person</strong> sits in the centre with a gold highlight. Everything above is their ancestry going back (parents, grandparents, and so on); everything below is their descendants. Connector lines join each generation.</li>
-                <li>Going up, each ancestor is shown <strong>with their spouse</strong>. Where a parent had more than one marriage, the partner who is <em>not</em> on your bloodline is tinted grey and labelled <strong>step</strong>, so the direct line is always clear.</li>
+                <li>Going up is a clean <strong>bloodline pyramid</strong>: each ancestor's father and mother appear as the two boxes side by side, so spouses are not repeated and a parent's other marriages are not mixed in. To see an ancestor's own spouse or other details, click their box.</li>
                 <li><strong>Siblings</strong> of the selected person are listed beneath them. <strong>Click one to add them beside the selected person</strong> (with their own descendants); click again to remove. You can add several at once. A half-sibling is shown with a small two-parent cap above them — the shared parent plus their different parent — so the split in the line is clear.</li>
                 <li><strong>Collapse controls:</strong> use <strong>&#x25B4; hide up</strong> on an ancestor to fold away everyone above them, and <strong>&#x25BE; hide down</strong> on a descendant to fold away everyone below. Click a hidden note to bring them back.</li>
                 <li>Clicking a person's <strong>box</strong> opens their details in the side panel (it does not change the view) — only the sibling links add or remove people.</li>
@@ -2067,7 +2067,12 @@ function linCouple(p,isAnchor,bloodlineOtherId){
 // the co-parent continuing the bloodline is tinted as a step-parent (#1).
 // coParentId = the id of p's partner who is the bloodline parent of the child below (so p's OTHER
 // spouse is the step-parent). Passed by the caller who knows both of the child's parents.
-function buildAncestors(p,coParentId){
+// ANCESTORS: pyramid ABOVE a person. Each ancestor is a SINGLE bloodline node - NOT a couple.
+// In an ascending pyramid a person's two parents are already the two adjacent nodes on the row, so
+// drawing each ancestor "with their spouse" would render every couple twice (mirrored) and make the
+// duplicate badge fire on every ancestor. A parent's other marriages (true step-parents) are off the
+// bloodline and are not shown here; they remain available in the person's details panel.
+function buildAncestors(p){
   var fa=byId[p.father_id||''], mo=byId[p.mother_id||''];
   var hasParents=!!(fa||mo);
   var h='<div class="lin-cell">';
@@ -2076,17 +2081,15 @@ function buildAncestors(p,coParentId){
       h+='<div class="lin-collapsed-note" onclick="toggleLinUp(\''+p.id+'\')">\u25B4 ancestors hidden \u2014 click to show</div>';
       h+='<div class="lin-conn-up"></div>';
     } else {
-      // p's bloodline co-parent one level up is p's own father/mother pairing; when we recurse we tell
-      // the parent which of ITS spouses is the bloodline one (i.e. p's other parent).
       h+='<div class="lin-row lin-row-up">';
-      if(fa) h+=buildAncestors(fa,p.mother_id||'');
-      if(mo) h+=buildAncestors(mo,p.father_id||'');
+      if(fa) h+=buildAncestors(fa);
+      if(mo) h+=buildAncestors(mo);
       h+='</div>';
       h+='<button class="lin-tog" title="Collapse ancestors" onclick="toggleLinUp(\''+p.id+'\')">\u25B4 hide up</button>';
       h+='<div class="lin-conn-up"></div>';
     }
   }
-  h+=linCouple(p,false,coParentId!==undefined?coParentId:(p.spouse_id||''));
+  h+='<div class="lin-couple">'+linNode(p)+'</div>';   // single bloodline node, no spouse
   h+='</div>';
   return h;
 }
@@ -2171,8 +2174,8 @@ function renderLineage(){
       html+='<div class="lin-collapsed-note" onclick="toggleLinUp(\''+anchor.id+'\')">\u25B4 ancestors hidden \u2014 click to show</div>';
     } else {
       html+='<div class="lin-row lin-row-up">';
-      if(fa) html+=buildAncestors(fa,anchor.mother_id||'');
-      if(mo) html+=buildAncestors(mo,anchor.father_id||'');
+      if(fa) html+=buildAncestors(fa);
+      if(mo) html+=buildAncestors(mo);
       html+='</div>';
       html+='<button class="lin-tog" onclick="toggleLinUp(\''+anchor.id+'\')">\u25B4 hide ancestors</button>';
     }
