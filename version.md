@@ -14,6 +14,7 @@ A running log of changes to the Family Tree application.
 
 - **Connector lines** now join the generations, making the shape of the tree easier to follow.
 - The ancestor view stays a **clean bloodline pyramid** — each ancestor's father and mother sit side by side, so spouses are not repeated going up. (An ancestor's own spouse or a parent's other marriage is still one click away in their details.) As a result, the *"↩ also shown"* badge now appears only for genuine shared ancestry, not on every couple.
+- **Ancestors now line up by generation.** Each couple sits on the same level and every generation shares a row, so a parent no longer drifts far from their partner and child when one branch of the family reaches back further than another.
 - **Clicking a sibling now adds them** beside the selected person (with their own descendants) instead of switching to them; click again to remove, and add as many as you like. A half-sibling is shown with a small two-parent cap — the shared parent plus their different parent — so the split in the line is clear. Clicking a person's box still just opens their details.
 
 ---

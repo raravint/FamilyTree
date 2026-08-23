@@ -298,6 +298,10 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
 .lin-node{position:relative;display:inline-block}
 /* #2 connector LINES between generations: vertical stems + horizontal sibling bar */
 .lin-row-up,.lin-row-down{position:relative}
+/* ancestor rows: align cells at the BOTTOM so a person and their co-parent (and everyone of the
+   same generation) share a baseline, instead of floating to the top of variable-height branches.
+   This mirrors the descendant side (which aligns at the top) and fixes the "detached parent" look. */
+.lin-row-up{align-items:flex-end}
 .lin-row-down>.lin-cell::before{content:'';position:absolute;top:-10px;left:50%;width:2px;height:10px;background:var(--bdr2)}
 .lin-row-down::before{content:'';position:absolute;top:-10px;left:10%;right:10%;height:2px;background:var(--bdr2)}
 .lin-row-down>.lin-cell:only-child::before{height:10px}
@@ -831,7 +835,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
               Search for a person to see their complete line — <strong>ancestors fanning upward</strong> and <strong>descendants fanning downward</strong>, meeting at the selected person in the middle.
               <ul>
                 <li>The <strong>selected person</strong> sits in the centre with a gold highlight. Everything above is their ancestry going back (parents, grandparents, and so on); everything below is their descendants. Connector lines join each generation.</li>
-                <li>Going up is a clean <strong>bloodline pyramid</strong>: each ancestor's father and mother appear as the two boxes side by side, so spouses are not repeated and a parent's other marriages are not mixed in. To see an ancestor's own spouse or other details, click their box.</li>
+                <li>Going up is a clean <strong>bloodline pyramid</strong>: each ancestor's father and mother appear as the two boxes side by side (on the same level), and each generation lines up on its own row, so the shape reads clearly even when one branch reaches back further than another. Spouses are not repeated and a parent's other marriages are not mixed in — to see an ancestor's own spouse or other details, click their box.</li>
                 <li><strong>Siblings</strong> of the selected person are listed beneath them. <strong>Click one to add them beside the selected person</strong> (with their own descendants); click again to remove. You can add several at once. A half-sibling is shown with a small two-parent cap above them — the shared parent plus their different parent — so the split in the line is clear.</li>
                 <li><strong>Collapse controls:</strong> use <strong>&#x25B4; hide up</strong> on an ancestor to fold away everyone above them, and <strong>&#x25BE; hide down</strong> on a descendant to fold away everyone below. Click a hidden note to bring them back.</li>
                 <li>Clicking a person's <strong>box</strong> opens their details in the side panel (it does not change the view) — only the sibling links add or remove people.</li>
