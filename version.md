@@ -4,6 +4,27 @@ A running log of changes to the Family Tree application.
 
 ---
 
+## Version 3.7 — July 2026
+
+**New**
+
+- **Lineage: repeated people are now marked.** When relatives married within the family, the same ancestor can be reached through more than one line and so appears more than once in the Lineage view. Every occurrence is now flagged with a dashed border and an *"↩ also shown"* badge, so it is clear it is one person shown in multiple places rather than several different people. The view stays a clean tree; nothing is merged.
+
+---
+
+## Version 3.6 — July 2026
+
+**New**
+
+- **Lineage tab** — a new view (before Branch View) that shows a person's complete line at once: ancestors fanning **upward** and descendants fanning **downward**, meeting at the selected person in the middle.
+  - The upward part is a true bloodline pyramid — each ancestor's father and mother sit side by side, and a parent's other marriages or step-relations are not mixed in.
+  - **Siblings** appear as links; clicking one re-centres the view. Full siblings keep the same ancestors, while a half-sibling's line traces back through their own different parent.
+  - **Directional collapse:** hide everyone above a chosen ancestor, or everyone below a chosen descendant.
+  - Includes the legend and a **Print Lineage** option (A3 PDF) with the same credits footer as the other tabs.
+- The Lineage tab is always visible, like Branch View.
+
+---
+
 ## Version 3.5 — July 2026
 
 **Fixes**

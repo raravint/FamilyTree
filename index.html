@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Family Tree">
 <meta name="theme-color" content="#1a1408">
 <meta name="format-detection" content="telephone=no">
-<title>Family Tree V3.5</title>
+<title>Family Tree V3.7</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Tamil:wght@400;600&family=Noto+Sans+Tamil:wght@400;600&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 
@@ -251,6 +251,43 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
 #branch-hint{font-size:11px;color:var(--mu);font-style:italic}
 #branch-print-btn{display:none}
 #branch-tree{flex:1;overflow:auto;padding:20px 24px;background:var(--bg)}
+/* LINEAGE TAB - ancestors up + anchor + descendants down (hourglass) */
+#lineage-area{display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden;position:relative}
+#lineage-area.on{display:flex}
+#lineage-toolbar{padding:10px 14px;border-bottom:1.5px solid var(--bdr);background:var(--bg2);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap}
+#lineage-hint{font-size:11px;color:var(--mu);font-style:italic}
+#lineage-scroll{flex:1;overflow:auto;background:var(--bg)}
+#lineage-view{min-width:min-content;padding:24px;display:flex;flex-direction:column;align-items:center}
+.lin-half{display:flex;flex-direction:column;align-items:center}
+.lin-half-up{justify-content:flex-end}
+.lin-divider{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:10px;
+  text-transform:uppercase;letter-spacing:1.5px;color:var(--mu);font-weight:700}
+.lin-divider::before,.lin-divider::after{content:'';height:1px;width:60px;background:var(--bdr)}
+/* a generation row (siblings/cousins side by side) */
+.lin-row{display:flex;justify-content:center;align-items:flex-start;gap:22px;flex-wrap:nowrap}
+.lin-cell{display:flex;flex-direction:column;align-items:center;position:relative}
+/* connectors */
+.lin-conn-up{width:2px;height:16px;background:var(--bdr2)}
+.lin-conn-down{width:2px;height:16px;background:var(--bdr2)}
+/* couple wrapper reuses bnode; anchor emphasised */
+.lin-couple{display:flex;align-items:center;gap:0}
+.lin-anchor .bnode{border-color:var(--gold2);border-width:2px;box-shadow:0 0 0 3px rgba(201,162,39,.18);background:#fffdf5}
+.lin-anchor-badge{font-size:8px;font-weight:700;color:var(--gold2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+/* toggle buttons for directional collapse */
+.lin-tog{font-size:10px;border:1px solid var(--bdr);background:#fff;color:var(--gold2);
+  border-radius:3px;cursor:pointer;padding:1px 5px;margin:2px}
+.lin-tog:hover{background:var(--glt)}
+.lin-collapsed-note{font-size:10px;color:var(--mu);font-style:italic;cursor:pointer;padding:3px}
+.lin-collapsed-note:hover{color:var(--gold2)}
+.lin-sibs{font-size:11px;color:var(--mu);margin-top:8px;text-align:center;max-width:520px}
+.lin-sibs .sib-tag{color:var(--gold2);cursor:pointer;text-decoration:underline}
+.lin-sibs .sib-tag:hover{color:var(--gold)}
+#lineage-print-btn{display:none}
+/* Option 2: duplicate person marker (same person shown more than once due to intermarriage/shared ancestry) */
+.bnode.is-dup{border-style:dashed;border-color:#b8860b}
+.lin-dup{margin-top:4px;font-size:8px;font-weight:700;color:#b8860b;background:#fff8e6;
+  border:1px solid #e8d9a0;border-radius:3px;padding:1px 4px;text-align:center;letter-spacing:.2px}
 /* BRANCH NODES */
 .branch-entry{display:flex;flex-direction:column;align-items:flex-start;margin-bottom:8px}
 .couple-row{display:flex;align-items:center;gap:0;flex-wrap:wrap}
@@ -485,9 +522,9 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 <!-- LOGIN SCREEN -->
 <div id="login">
   <div class="lc">
-    <div class="lt">Family Tree V3.5</div>
+    <div class="lt">Family Tree V3.7</div>
     <div class="lta">எமது குடும்ப விருட்சம்</div>
-    <div class="lv">VERSION 3.5</div>
+    <div class="lv">VERSION 3.7</div>
     <div class="ldiv"></div>
     <div style="font-size:9px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:5px">Presented by</div>
     <div class="la-n" id="welcome-presentedby">Yathavan Pathmanathan (Canada) &amp; Raj Aravinthan (Australia)</div>
@@ -510,7 +547,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
     <div id="print-credits"></div>
   </div>
   <header>
-    <div class="hb">Family Tree V3.5<small>எமது குடும்ப மரம்</small></div>
+    <div class="hb">Family Tree V3.7<small>எமது குடும்ப மரம்</small></div>
     <div id="admin-badge" class="admin-indicator" style="display:none">🔒 ADMIN</div>
     <div class="tb">
       <div id="tree-controls" style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
@@ -535,6 +572,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 
   <div class="tabbar">
     <button class="tab on" id="t-tree" onclick="switchTab('tree')">🌳 Family Tree</button>
+    <button class="tab" id="t-lineage" onclick="switchTab('lineage')">🧬 Lineage</button>
     <button class="tab" id="t-branch" onclick="switchTab('branch')">🧵 Branch View</button>
     <button class="tab" id="t-contact" onclick="switchTab('contact')">✉ Contact Us</button>
     <button class="tab" id="t-help" onclick="switchTab('help')">❔ Help</button>
@@ -600,6 +638,46 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
           </div>
         </div>
         <div class="elist" id="elist"></div>
+      </div>
+
+      <!-- Lineage tab: ancestors (up) + anchor + descendants (down) -->
+      <div id="lineage-area">
+        <div id="lineage-toolbar">
+          <div class="bsw">
+            <input type="text" id="lineage-search" placeholder="Search a person to see their ancestors &amp; descendants…" autocomplete="off">
+            <div id="lineage-sdd"></div>
+          </div>
+          <span id="lineage-hint">Search a name to see their full line — ancestors above, descendants below</span>
+          <button class="btn btn-pu" id="lineage-print-btn" onclick="printLineage()" style="display:none">⎙ Print Lineage</button>
+        </div>
+        <div id="lineage-scroll">
+          <div id="lineage-view">
+            <div style="text-align:center;color:var(--mu);padding:60px;font-style:italic;font-size:14px">
+              Search for a person above to see their ancestors fanning up and descendants fanning down
+            </div>
+          </div>
+        </div>
+        <div class="clegend min" id="lineage-legend" style="display:none">
+          <div class="cl-hd" onclick="toggleLegend(this)"><span class="cl-t">Legend</span><button class="cl-tog" title="Expand/collapse">&#x25B8;</button></div>
+          <div class="cl-body">
+          <div class="cl-i">&#x1F1F1;&#x1F1F0; Sri Lanka</div>
+          <div class="cl-i">&#x1F1EC;&#x1F1E7; United Kingdom</div>
+          <div class="cl-i">&#x1F1E6;&#x1F1FA; Australia / NZ</div>
+          <div class="cl-i">&#x1F1E8;&#x1F1E6; Canada / US</div>
+          <div class="cl-i">&#x1F1EE;&#x1F1F3; India</div>
+          <div class="cl-i">&#x1F1E9;&#x1F1EA; Germany / EU</div>
+          <div class="cl-i">&#x271D; Eternal Peace</div>
+          <div class="cl-i">&#x2694; Tamil Eelam</div>
+          <div class="cl-i" style="border-top:1px solid var(--bdr2);padding-top:4px;margin-top:4px"><div class="ldot" style="background:var(--mb)"></div> Male</div>
+          <div class="cl-i"><div class="ldot" style="background:var(--fb)"></div> Female</div>
+          <div class="cl-i" style="color:var(--dec)">&#x2020; Deceased (dashed)</div>
+          <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#2d6a4f;color:#fff;padding:1px 3px;border-radius:2px">A</span> Ancestry</div>
+          <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#0e62b5;color:#fff;padding:1px 3px;border-radius:2px">23</span> 23andMe</div>
+          <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#c0392b;color:#fff;padding:1px 3px;border-radius:2px">MH</span> MyHeritage</div>
+          <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#1a6b9a;color:#fff;padding:1px 3px;border-radius:2px">FT</span> FamilyTreeDNA</div>
+          <div class="cl-i"><span style="font-size:9px;font-weight:700;background:#6d4c41;color:#fff;padding:1px 3px;border-radius:2px">LD</span> LivingDNA</div>
+          </div>
+        </div>
       </div>
 
       <!-- Branch tab -->
@@ -722,6 +800,22 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
             <div class="help-q">🧬 Relationship Finder</div>
             <div class="help-a">
               Open any person’s details in the side panel, scroll to <em>Relationship Finder</em>, and start typing another person’s name. Pick them from the list and the tool tells you exactly how the two are related — parent, sibling, cousin, grandparent, or related by marriage.
+            </div>
+          </div>
+
+          <div class="help-section">
+            <div class="help-q">🧬 Lineage Tab</div>
+            <div class="help-a">
+              Search for a person to see their complete line — <strong>ancestors fanning upward</strong> and <strong>descendants fanning downward</strong>, meeting at the selected person in the middle.
+              <ul>
+                <li>The <strong>selected person</strong> sits in the centre with a gold highlight. Everything above is their bloodline going back (parents, grandparents, and so on); everything below is their descendants.</li>
+                <li>The upward part is a true bloodline: each ancestor's father and mother appear side by side, so step-parents and a parent's other marriages are not mixed in.</li>
+                <li><strong>Siblings</strong> of the selected person are listed as links beneath them. Click one to re-centre the view on that sibling — full siblings keep the same ancestors, while a half-sibling's line correctly traces back through their own different parent.</li>
+                <li><strong>Collapse controls:</strong> use <strong>&#x25B4; hide up</strong> on an ancestor to fold away everyone above them, and <strong>&#x25BE; hide down</strong> on a descendant to fold away everyone below. Click a hidden note to bring them back.</li>
+                <li>If the same person appears more than once — which happens when relatives married within the family, so an ancestor is reached through two lines — every copy is marked <em>&#x21A9; also shown</em> with a dashed border, so you know it’s one person, not several.</li>
+                <li><strong>&#x2398; Print Lineage</strong> saves the whole line as a PDF (A3 landscape), with the legend and credits at the bottom.</li>
+                <li>The <strong>legend</strong> is a <strong>Legend &#x25B8;</strong> button at the bottom-right you can expand or minimise, as on the other tabs.</li>
+              </ul>
             </div>
           </div>
 
@@ -1024,6 +1118,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 <div id="toast"></div>
 
 <script>
+
 
 
 
@@ -1635,12 +1730,14 @@ function switchTab(t){
   document.getElementById('cw').style.display=t==='tree'?'block':'none';
   document.getElementById('err-area').classList.toggle('on',t==='err');
   document.getElementById('branch-area').classList.toggle('on',t==='branch');
+  document.getElementById('lineage-area').classList.toggle('on',t==='lineage');
   document.getElementById('contact-area').classList.toggle('on',t==='contact');
   document.getElementById('admin-area').classList.toggle('on',t==='admin');
-  ['t-tree','t-err','t-branch','t-contact','t-admin'].forEach(function(id){
+  ['t-tree','t-err','t-branch','t-lineage','t-contact','t-admin'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.classList.toggle('on',id==='t-'+t);
   });
   if(t==='err')renderErr();
+  if(t==='lineage'){renderLineage();setTimeout(function(){var e=document.getElementById('lineage-search');if(e)e.focus();},100);}
   if(t==='branch'){
     // #4 apply configured default person the first time Branch View opens (if set and resolvable)
     if(!branchRoot && CONFIG.branch_default){
@@ -1897,6 +1994,208 @@ function printBranch(){
   document.head.appendChild(style);window.print();
   setTimeout(function(){document.head.removeChild(style);document.title=orig;},500);
 }
+
+// ============ LINEAGE TAB: ancestors (up) + anchor + descendants (down) ============
+var lineageAnchor=null;
+var linColUp=new Set();    // ids whose ANCESTORS (above) are collapsed
+var linColDown=new Set();  // ids whose DESCENDANTS (below) are collapsed
+var linIdCount={};         // per-render tally of how many times each person id is drawn
+function linTally(id){ linIdCount[id]=(linIdCount[id]||0)+1; }
+// wrap a person node so we can find it afterwards and badge duplicates (all occurrences)
+function linNode(p){ linTally(p.id); return '<span class="lin-node" data-pid="'+p.id+'">'+mkBNode(p,false)+'</span>'; }
+function toggleLinUp(id){ if(linColUp.has(id))linColUp.delete(id); else linColUp.add(id); renderLineage(); }
+function toggleLinDown(id){ if(linColDown.has(id))linColDown.delete(id); else linColDown.add(id); renderLineage(); }
+function lineageSelect(id){ if(!byId[id])return; lineageAnchor=id; linColUp.clear(); linColDown.clear();
+  var s=document.getElementById('lineage-search'); if(s)s.value=byId[id].name; renderLineage(); }
+
+// couple HTML (anchor person + spouse) reusing mkBNode
+function linCouple(p,isAnchor){
+  var sp=byId[p.spouse_id||''],sp2=byId[p.spouse2_id||''];
+  var h='<div class="lin-couple'+(isAnchor?' lin-anchor':'')+'">';
+  h+=linNode(p);
+  if(sp){h+='<div class="spouse-connector"><div class="sc-line"></div><div class="sc-heart">\u2665</div></div>'+linNode(sp);}
+  if(sp2){h+='<div class="spouse-connector" style="margin-left:8px"><div class="sc2-line"></div><div class="sc2-heart">\u2665</div></div>'+linNode(sp2)+'<span style="font-size:9px;color:var(--mu);margin-left:4px;align-self:center">(2nd)</span>';}
+  h+='</div>';
+  return h;
+}
+
+// ANCESTORS: recursively build the pyramid ABOVE a person (parents, then their parents...)
+// Option A: each ancestor is shown as a SINGLE node (no spouse expansion), because the father
+// and mother already sit side-by-side as adjacent cells - so the "couple" is visible without
+// pulling in step-parents (a parent's other spouse who is not this line's ancestor).
+function buildAncestors(p){
+  var fa=byId[p.father_id||''], mo=byId[p.mother_id||''];
+  var hasParents=!!(fa||mo);
+  var h='<div class="lin-cell">';
+  if(hasParents){
+    if(linColUp.has(p.id)){
+      h+='<div class="lin-collapsed-note" onclick="toggleLinUp(\''+p.id+'\')">\u25B4 ancestors hidden \u2014 click to show</div>';
+      h+='<div class="lin-conn-up"></div>';
+    } else {
+      // parents row (father + mother side by side, each recursively their own ancestors)
+      h+='<div class="lin-row">';
+      if(fa) h+=buildAncestors(fa);
+      if(mo) h+=buildAncestors(mo);
+      h+='</div>';
+      h+='<button class="lin-tog" title="Collapse ancestors" onclick="toggleLinUp(\''+p.id+'\')">\u25B4 hide up</button>';
+      h+='<div class="lin-conn-up"></div>';
+    }
+  }
+  h+='<div class="lin-couple">'+linNode(p)+'</div>';   // single node, no spouse (Option A)
+  h+='</div>';
+  return h;
+}
+
+// DESCENDANTS: build the tree BELOW a person (children, their children...)
+function buildDescendants(p){
+  var ch=kids(p.id).map(function(cid){return byId[cid];}).filter(Boolean);
+  var h='<div class="lin-cell">';
+  h+=linCouple(p,false);
+  if(ch.length){
+    if(linColDown.has(p.id)){
+      h+='<div class="lin-conn-down"></div>';
+      h+='<div class="lin-collapsed-note" onclick="toggleLinDown(\''+p.id+'\')">\u25BE '+ch.length+' descendant line'+(ch.length>1?'s':'')+' hidden \u2014 click to show</div>';
+    } else {
+      h+='<button class="lin-tog" title="Collapse descendants" onclick="toggleLinDown(\''+p.id+'\')">\u25BE hide down</button>';
+      h+='<div class="lin-conn-down"></div>';
+      h+='<div class="lin-row">';
+      ch.forEach(function(c){ h+=buildDescendants(c); });
+      h+='</div>';
+    }
+  }
+  h+='</div>';
+  return h;
+}
+
+function renderLineage(){
+  var view=document.getElementById('lineage-view');
+  var leg=document.getElementById('lineage-legend');
+  var pbtn=document.getElementById('lineage-print-btn');
+  if(!lineageAnchor||!byId[lineageAnchor]){
+    view.innerHTML='<div style="text-align:center;color:var(--mu);padding:60px;font-style:italic;font-size:14px">Search for a person above to see their ancestors fanning up and descendants fanning down</div>';
+    if(leg)leg.style.display='none'; if(pbtn)pbtn.style.display='none';
+    return;
+  }
+  var anchor=byId[lineageAnchor];
+  linIdCount={};   // reset per-render duplicate tally
+  var fa=byId[anchor.father_id||''], mo=byId[anchor.mother_id||''];
+  var ch=kids(anchor.id).map(function(cid){return byId[cid];}).filter(Boolean);
+  var html='';
+
+  // --- UPPER HALF: ancestors (only if the anchor has parents) ---
+  if(fa||mo){
+    html+='<div class="lin-half lin-half-up">';
+    if(linColUp.has(anchor.id)){
+      html+='<div class="lin-collapsed-note" onclick="toggleLinUp(\''+anchor.id+'\')">\u25B4 ancestors hidden \u2014 click to show</div>';
+    } else {
+      html+='<div class="lin-row">';
+      if(fa) html+=buildAncestors(fa);
+      if(mo) html+=buildAncestors(mo);
+      html+='</div>';
+      html+='<button class="lin-tog" onclick="toggleLinUp(\''+anchor.id+'\')">\u25B4 hide ancestors</button>';
+    }
+    html+='<div class="lin-conn-up"></div>';
+    html+='</div>';
+    html+='<div class="lin-divider">Ancestors &#x2191;</div>';
+  }
+
+  // --- ANCHOR (the pinch point) ---
+  html+='<div class="lin-anchor-badge">Selected</div>';
+  html+='<div class="lin-cell lin-anchor-cell">'+linCouple(anchor,true)+'</div>';
+
+  // anchor's siblings as hyperlinks (only the anchor)
+  var sibIds=(fa?kids(fa.id):[]).concat(mo?kids(mo.id):[]).filter(function(v,i,a){return a.indexOf(v)===i;});
+  var sibs=sibIds.map(function(cid){return byId[cid];}).filter(function(x){return x&&x.id!==anchor.id;});
+  if(sibs.length){
+    html+='<div class="lin-sibs"><strong>Siblings:</strong> ';
+    sibs.forEach(function(s,i){ html+='<span class="sib-tag" onclick="lineageSelect(\''+s.id+'\')">'+esc(s.name)+'</span>'+(i<sibs.length-1?', ':''); });
+    html+='</div>';
+  }
+
+  // --- LOWER HALF: descendants (only if the anchor has children) ---
+  if(ch.length){
+    html+='<div class="lin-divider">Descendants &#x2193;</div>';
+    html+='<div class="lin-half lin-half-down">';
+    html+='<div class="lin-conn-down"></div>';
+    if(linColDown.has(anchor.id)){
+      html+='<div class="lin-collapsed-note" onclick="toggleLinDown(\''+anchor.id+'\')">\u25BE descendants hidden \u2014 click to show</div>';
+    } else {
+      html+='<button class="lin-tog" onclick="toggleLinDown(\''+anchor.id+'\')">\u25BE hide descendants</button>';
+      html+='<div class="lin-row">';
+      ch.forEach(function(c){ html+=buildDescendants(c); });
+      html+='</div>';
+    }
+    html+='</div>';
+  }
+
+  view.innerHTML=html;
+  // Option 2: badge EVERY occurrence of any person drawn more than once in this view
+  var dupIds={}; for(var k in linIdCount){ if(linIdCount[k]>1) dupIds[k]=true; }
+  if(Object.keys(dupIds).length){
+    var nodes=view.querySelectorAll('.lin-node[data-pid]');
+    Array.prototype.forEach.call(nodes,function(span){
+      var pid=span.getAttribute('data-pid');
+      if(dupIds[pid]){
+        var bx=span.querySelector('.bnode');
+        if(bx && !bx.querySelector('.lin-dup')){
+          bx.classList.add('is-dup');
+          var b=document.createElement('div');
+          b.className='lin-dup';
+          b.title='This person appears more than once in this view because of shared ancestry or marriage within the family';
+          b.innerHTML='\u21A9 also shown ('+linIdCount[pid]+'\u00D7)';
+          bx.appendChild(b);
+        }
+      }
+    });
+  }
+  if(leg)leg.style.display='block';
+  if(pbtn)pbtn.style.display='inline-flex';
+}
+
+// Lineage search wiring (mirrors branch search)
+var lsEl=document.getElementById('lineage-search'),lsddEl=document.getElementById('lineage-sdd');
+var lsRes=[],lsSel=-1;
+if(lsEl){
+  lsEl.addEventListener('input',function(){
+    var q=lsEl.value.trim().toLowerCase();
+    if(!q){lsddEl.classList.remove('open');return;}
+    lsRes=DATA.filter(function(p){return p.name.toLowerCase().includes(q)||(p.tamil&&p.tamil.includes(q));});
+    var html='<div class="si-cnt">'+lsRes.length+' result'+(lsRes.length!==1?'s':'')+'</div>';
+    lsRes.slice(0,20).forEach(function(p,i){
+      var lf=lifeStr(p),cx=ctxStr(p);var showLf=(!ADMIN_MODE&&!p.deceased&&!p.dod)?'':lf;
+      html+='<div class="si-item" data-i="'+i+'" onclick="pickLineage('+i+')">'+
+        '<span class="si-gen">Gen '+(p.gen+1)+'</span>'+
+        '<div class="si-name">'+esc(p.name)+(p.deceased?' \u2020':'')+'</div>'+
+        (p.tamil?'<div class="si-tamil">'+esc(p.tamil)+'</div>':'')+
+        (showLf?'<div class="si-life">'+esc(showLf)+'</div>':'')+
+        (cx?'<div class="si-ctx">'+esc(cx)+'</div>':'')+
+        '</div>';
+    });
+    if(lsRes.length>20)html+='<div style="padding:6px 11px;font-size:10px;color:var(--mu)">+ '+(lsRes.length-20)+' more\u2026</div>';
+    lsddEl.innerHTML=html;lsddEl.classList.add('open');lsSel=-1;
+  });
+  lsEl.addEventListener('keydown',function(e){
+    var its=lsddEl.querySelectorAll('.si-item[data-i]');
+    if(e.key==='ArrowDown'){lsSel=Math.min(lsSel+1,its.length-1);hlLDD(its);e.preventDefault();}
+    else if(e.key==='ArrowUp'){lsSel=Math.max(lsSel-1,0);hlLDD(its);e.preventDefault();}
+    else if(e.key==='Enter'&&lsSel>=0)pickLineage(lsSel);
+    else if(e.key==='Escape')lsddEl.classList.remove('open');
+  });
+}
+function hlLDD(its){its.forEach(function(el,i){el.classList.toggle('hi',i===lsSel);});if(lsSel>=0&&its[lsSel])its[lsSel].scrollIntoView({block:'nearest'});}
+function pickLineage(idx){var p=lsRes[idx];if(!p)return;lsddEl.classList.remove('open');lineageSelect(p.id);}
+document.addEventListener('click',function(e){if(lsddEl&&!e.target.closest('#lineage-toolbar .bsw'))lsddEl.classList.remove('open');});
+
+function printLineage(){
+  if(!lineageAnchor)return;
+  var orig=document.title; if(byId[lineageAnchor])document.title='Lineage - '+byId[lineageAnchor].name;
+  preparePrintFooter();
+  var style=document.createElement('style');
+  style.textContent='@media print{#login,header,.tabbar,#panel,#cw,#err-area,#toast,.ov,#lineage-toolbar,#contact-area,#admin-area,#lineage-legend{display:none!important}#lineage-area{display:block!important;overflow:visible!important;height:auto!important}#lineage-scroll{overflow:visible!important;height:auto!important;padding-bottom:120px!important}@page{size:A3 landscape;margin:8mm}.bnode{-webkit-print-color-adjust:exact;print-color-adjust:exact}.lin-tog,.lin-collapsed-note{display:none!important}}';
+  document.head.appendChild(style);window.print();
+  setTimeout(function(){document.head.removeChild(style);document.title=orig;},500);
+}
+
 // Build the print-only footer: legend (left) + presenter & credits (right)
 function preparePrintFooter(){
   var leg=document.getElementById('print-legend'), cr=document.getElementById('print-credits');
@@ -2422,6 +2721,7 @@ function applyTabVisibility() {
   // When admin is logged in, show ALL tabs so the owner can always manage.
   function vis(id, on){ var el=document.getElementById(id); if(el) el.style.display=(ADMIN_MODE||on)?'block':'none'; }
   vis('t-tree',       t.tree);
+  vis('t-lineage',    true);   // Lineage is always visible to the public
   vis('t-branch',     true);   // Branch View is always visible to the public
   vis('t-contact',    t.contact);
   vis('t-help',       t.help);
@@ -2602,7 +2902,7 @@ function enterApp(){
     // #2 On mobile the details panel starts closed so the tree isn't blocked; a node click opens it.
     if(isMobile() && panO){ togglePanel(); }
     render();setTimeout(fitV,100);
-    toast('Family Tree V3.5 -- '+DATA.length+' members loaded');
+    toast('Family Tree V3.7 -- '+DATA.length+' members loaded');
   },500);
 }
 
@@ -2728,6 +3028,7 @@ document.addEventListener('keydown',function(e){
 });
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===document.getElementById('modal'))closeModal();});
 document.getElementById('admin-modal').addEventListener('click',function(e){if(e.target===document.getElementById('admin-modal'))closeAdminModal();});
+
 
 
 
