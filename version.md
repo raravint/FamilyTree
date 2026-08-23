@@ -10,6 +10,12 @@ A running log of changes to the Family Tree application.
 
 - **Lineage: repeated people are now marked.** When relatives married within the family, the same ancestor can be reached through more than one line and so appears more than once in the Lineage view. Every occurrence is now flagged with a dashed border and an *"↩ also shown"* badge, so it is clear it is one person shown in multiple places rather than several different people. The view stays a clean tree; nothing is merged.
 
+**Lineage improvements**
+
+- **Ancestors now show spouses, with step-parents marked.** Going up, each ancestor appears with their partner. Where an ancestor had more than one marriage, the partner who is not on your direct bloodline is tinted grey and labelled *step*, so the direct line stays clear.
+- **Connector lines** now join the generations, making the shape of the tree easier to follow.
+- **Clicking a sibling now adds them** beside the selected person (with their own descendants) instead of switching to them; click again to remove, and add as many as you like. A half-sibling is shown with a small two-parent cap — the shared parent plus their different parent — so the split in the line is clear. Clicking a person's box still just opens their details.
+
 ---
 
 ## Version 3.6 — July 2026

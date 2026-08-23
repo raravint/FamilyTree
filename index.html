@@ -281,8 +281,30 @@ header{background:var(--bg2);border-bottom:2px solid var(--bdr);padding:6px 12px
 .lin-collapsed-note{font-size:10px;color:var(--mu);font-style:italic;cursor:pointer;padding:3px}
 .lin-collapsed-note:hover{color:var(--gold2)}
 .lin-sibs{font-size:11px;color:var(--mu);margin-top:8px;text-align:center;max-width:520px}
-.lin-sibs .sib-tag{color:var(--gold2);cursor:pointer;text-decoration:underline}
+.lin-sibs .sib-tag{color:var(--gold2);cursor:pointer;text-decoration:underline;padding:1px 4px;border-radius:3px;display:inline-block;margin:2px 0}
 .lin-sibs .sib-tag:hover{color:var(--gold)}
+.lin-sibs .sib-tag.on{background:var(--gold2);color:#fff;text-decoration:none;font-weight:700}
+/* #3 anchor row holds the anchor + added siblings side by side; each in its own column */
+.lin-anchor-row{display:flex;justify-content:center;align-items:flex-start;gap:40px;flex-wrap:nowrap}
+.lin-anchor-col{display:flex;flex-direction:column;align-items:center;position:relative}
+/* #3c half-sibling mini 2-parent cap */
+.lin-halfcap{display:flex;flex-direction:column;align-items:center;margin-bottom:2px;
+  padding:6px 8px;border:1px dashed var(--bdr2);border-radius:6px;background:rgba(0,0,0,.015)}
+.lin-halfcap-note{font-size:8px;color:var(--mu);font-style:italic;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+/* #1 step-parent: tint grey + label */
+.lin-step .bnode{background:#f0f0f0;border-color:#c8c8c8;opacity:.85;filter:grayscale(.4)}
+.lin-step-tag{position:absolute;top:-6px;right:-6px;font-size:7px;font-weight:700;background:#888;color:#fff;
+  padding:1px 4px;border-radius:3px;text-transform:uppercase;letter-spacing:.3px;z-index:2}
+.lin-node{position:relative;display:inline-block}
+/* #2 connector LINES between generations: vertical stems + horizontal sibling bar */
+.lin-row-up,.lin-row-down{position:relative}
+.lin-row-down>.lin-cell::before{content:'';position:absolute;top:-10px;left:50%;width:2px;height:10px;background:var(--bdr2)}
+.lin-row-down::before{content:'';position:absolute;top:-10px;left:10%;right:10%;height:2px;background:var(--bdr2)}
+.lin-row-down>.lin-cell:only-child::before{height:10px}
+.lin-row-down:has(>.lin-cell:only-child)::before{display:none}
+.lin-row-up>.lin-cell::after{content:'';position:absolute;bottom:-10px;left:50%;width:2px;height:10px;background:var(--bdr2)}
+.lin-row-up::after{content:'';position:absolute;bottom:-10px;left:10%;right:10%;height:2px;background:var(--bdr2)}
+.lin-row-up:has(>.lin-cell:only-child)::after{display:none}
 #lineage-print-btn{display:none}
 /* Option 2: duplicate person marker (same person shown more than once due to intermarriage/shared ancestry) */
 .bnode.is-dup{border-style:dashed;border-color:#b8860b}
@@ -808,10 +830,11 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
             <div class="help-a">
               Search for a person to see their complete line — <strong>ancestors fanning upward</strong> and <strong>descendants fanning downward</strong>, meeting at the selected person in the middle.
               <ul>
-                <li>The <strong>selected person</strong> sits in the centre with a gold highlight. Everything above is their bloodline going back (parents, grandparents, and so on); everything below is their descendants.</li>
-                <li>The upward part is a true bloodline: each ancestor's father and mother appear side by side, so step-parents and a parent's other marriages are not mixed in.</li>
-                <li><strong>Siblings</strong> of the selected person are listed as links beneath them. Click one to re-centre the view on that sibling — full siblings keep the same ancestors, while a half-sibling's line correctly traces back through their own different parent.</li>
+                <li>The <strong>selected person</strong> sits in the centre with a gold highlight. Everything above is their ancestry going back (parents, grandparents, and so on); everything below is their descendants. Connector lines join each generation.</li>
+                <li>Going up, each ancestor is shown <strong>with their spouse</strong>. Where a parent had more than one marriage, the partner who is <em>not</em> on your bloodline is tinted grey and labelled <strong>step</strong>, so the direct line is always clear.</li>
+                <li><strong>Siblings</strong> of the selected person are listed beneath them. <strong>Click one to add them beside the selected person</strong> (with their own descendants); click again to remove. You can add several at once. A half-sibling is shown with a small two-parent cap above them — the shared parent plus their different parent — so the split in the line is clear.</li>
                 <li><strong>Collapse controls:</strong> use <strong>&#x25B4; hide up</strong> on an ancestor to fold away everyone above them, and <strong>&#x25BE; hide down</strong> on a descendant to fold away everyone below. Click a hidden note to bring them back.</li>
+                <li>Clicking a person's <strong>box</strong> opens their details in the side panel (it does not change the view) — only the sibling links add or remove people.</li>
                 <li>If the same person appears more than once — which happens when relatives married within the family, so an ancestor is reached through two lines — every copy is marked <em>&#x21A9; also shown</em> with a dashed border, so you know it’s one person, not several.</li>
                 <li><strong>&#x2398; Print Lineage</strong> saves the whole line as a PDF (A3 landscape), with the legend and credits at the bottom.</li>
                 <li>The <strong>legend</strong> is a <strong>Legend &#x25B8;</strong> button at the bottom-right you can expand or minimise, as on the other tabs.</li>
@@ -1118,6 +1141,7 @@ header { padding-top: max(6px, env(safe-area-inset-top, 0)) }
 <div id="toast"></div>
 
 <script>
+
 
 
 
@@ -1997,33 +2021,53 @@ function printBranch(){
 
 // ============ LINEAGE TAB: ancestors (up) + anchor + descendants (down) ============
 var lineageAnchor=null;
-var linColUp=new Set();    // ids whose ANCESTORS (above) are collapsed
-var linColDown=new Set();  // ids whose DESCENDANTS (below) are collapsed
-var linIdCount={};         // per-render tally of how many times each person id is drawn
+var linColUp=new Set();      // ids whose ANCESTORS (above) are collapsed
+var linColDown=new Set();    // ids whose DESCENDANTS (below) are collapsed
+var linAddedSibs=[];         // #3: extra siblings added beside the anchor (accumulating, toggleable)
+var linIdCount={};           // per-render tally of how many times each person id is drawn
 function linTally(id){ linIdCount[id]=(linIdCount[id]||0)+1; }
-// wrap a person node so we can find it afterwards and badge duplicates (all occurrences)
-function linNode(p){ linTally(p.id); return '<span class="lin-node" data-pid="'+p.id+'">'+mkBNode(p,false)+'</span>'; }
+// wrap a person node so we can badge duplicates afterwards. opts.step tints as step-parent
+function linNode(p,opts){
+  opts=opts||{}; linTally(p.id);
+  var cls='lin-node'+(opts.step?' lin-step':'');
+  var badge=opts.step?'<span class="lin-step-tag">step</span>':'';
+  return '<span class="'+cls+'" data-pid="'+p.id+'">'+mkBNode(p,false)+badge+'</span>';
+}
 function toggleLinUp(id){ if(linColUp.has(id))linColUp.delete(id); else linColUp.add(id); renderLineage(); }
 function toggleLinDown(id){ if(linColDown.has(id))linColDown.delete(id); else linColDown.add(id); renderLineage(); }
-function lineageSelect(id){ if(!byId[id])return; lineageAnchor=id; linColUp.clear(); linColDown.clear();
+function lineageSelect(id){ if(!byId[id])return; lineageAnchor=id; linColUp.clear(); linColDown.clear(); linAddedSibs=[];
   var s=document.getElementById('lineage-search'); if(s)s.value=byId[id].name; renderLineage(); }
+// #3: clicking a sibling ADDS them beside the anchor (accumulate); clicking again removes (toggle)
+function toggleSibling(id){
+  if(!byId[id])return;
+  var i=linAddedSibs.indexOf(id);
+  if(i>=0) linAddedSibs.splice(i,1); else linAddedSibs.push(id);
+  renderLineage();
+}
 
-// couple HTML (anchor person + spouse) reusing mkBNode
-function linCouple(p,isAnchor){
+// couple HTML (person + spouse(s)). In the ANCESTOR tower, pass bloodlineOtherId = the co-parent id
+// so the OTHER spouse is marked as a step-parent (#1). Omit it in descendant context (no step marks).
+function linCouple(p,isAnchor,bloodlineOtherId){
   var sp=byId[p.spouse_id||''],sp2=byId[p.spouse2_id||''];
   var h='<div class="lin-couple'+(isAnchor?' lin-anchor':'')+'">';
   h+=linNode(p);
-  if(sp){h+='<div class="spouse-connector"><div class="sc-line"></div><div class="sc-heart">\u2665</div></div>'+linNode(sp);}
-  if(sp2){h+='<div class="spouse-connector" style="margin-left:8px"><div class="sc2-line"></div><div class="sc2-heart">\u2665</div></div>'+linNode(sp2)+'<span style="font-size:9px;color:var(--mu);margin-left:4px;align-self:center">(2nd)</span>';}
+  function spouseNode(s,second){
+    if(!s)return '';
+    var isStep=(bloodlineOtherId!==undefined)&&s.id!==bloodlineOtherId;
+    var conn='<div class="spouse-connector"'+(second?' style="margin-left:8px"':'')+'><div class="'+(second?'sc2-line':'sc-line')+'"></div><div class="'+(second?'sc2-heart':'sc-heart')+'">\u2665</div></div>';
+    return conn+linNode(s,{step:isStep})+(second?'<span style="font-size:9px;color:var(--mu);margin-left:4px;align-self:center">(2nd)</span>':'');
+  }
+  h+=spouseNode(sp,false);
+  h+=spouseNode(sp2,true);
   h+='</div>';
   return h;
 }
 
-// ANCESTORS: recursively build the pyramid ABOVE a person (parents, then their parents...)
-// Option A: each ancestor is shown as a SINGLE node (no spouse expansion), because the father
-// and mother already sit side-by-side as adjacent cells - so the "couple" is visible without
-// pulling in step-parents (a parent's other spouse who is not this line's ancestor).
-function buildAncestors(p){
+// ANCESTORS: pyramid ABOVE a person. Each ancestor shown WITH their spouse(s); a spouse who is not
+// the co-parent continuing the bloodline is tinted as a step-parent (#1).
+// coParentId = the id of p's partner who is the bloodline parent of the child below (so p's OTHER
+// spouse is the step-parent). Passed by the caller who knows both of the child's parents.
+function buildAncestors(p,coParentId){
   var fa=byId[p.father_id||''], mo=byId[p.mother_id||''];
   var hasParents=!!(fa||mo);
   var h='<div class="lin-cell">';
@@ -2032,21 +2076,22 @@ function buildAncestors(p){
       h+='<div class="lin-collapsed-note" onclick="toggleLinUp(\''+p.id+'\')">\u25B4 ancestors hidden \u2014 click to show</div>';
       h+='<div class="lin-conn-up"></div>';
     } else {
-      // parents row (father + mother side by side, each recursively their own ancestors)
-      h+='<div class="lin-row">';
-      if(fa) h+=buildAncestors(fa);
-      if(mo) h+=buildAncestors(mo);
+      // p's bloodline co-parent one level up is p's own father/mother pairing; when we recurse we tell
+      // the parent which of ITS spouses is the bloodline one (i.e. p's other parent).
+      h+='<div class="lin-row lin-row-up">';
+      if(fa) h+=buildAncestors(fa,p.mother_id||'');
+      if(mo) h+=buildAncestors(mo,p.father_id||'');
       h+='</div>';
       h+='<button class="lin-tog" title="Collapse ancestors" onclick="toggleLinUp(\''+p.id+'\')">\u25B4 hide up</button>';
       h+='<div class="lin-conn-up"></div>';
     }
   }
-  h+='<div class="lin-couple">'+linNode(p)+'</div>';   // single node, no spouse (Option A)
+  h+=linCouple(p,false,coParentId!==undefined?coParentId:(p.spouse_id||''));
   h+='</div>';
   return h;
 }
 
-// DESCENDANTS: build the tree BELOW a person (children, their children...)
+// DESCENDANTS: tree BELOW a person. Spouses shown normally (no step marking).
 function buildDescendants(p){
   var ch=kids(p.id).map(function(cid){return byId[cid];}).filter(Boolean);
   var h='<div class="lin-cell">';
@@ -2058,7 +2103,45 @@ function buildDescendants(p){
     } else {
       h+='<button class="lin-tog" title="Collapse descendants" onclick="toggleLinDown(\''+p.id+'\')">\u25BE hide down</button>';
       h+='<div class="lin-conn-down"></div>';
-      h+='<div class="lin-row">';
+      h+='<div class="lin-row lin-row-down">';
+      ch.forEach(function(c){ h+=buildDescendants(c); });
+      h+='</div>';
+    }
+  }
+  h+='</div>';
+  return h;
+}
+
+// build one anchor-level person (anchor or added sibling) with their descendants below.
+// For an added HALF-sibling: mini 2-parent cap above them (shared parent + their different parent). #3c(ii)
+function buildAnchorPerson(p,isAnchor,anchorFa,anchorMo){
+  var h='<div class="lin-anchor-col">';
+  if(!isAnchor){
+    var sharedFa=(p.father_id&&p.father_id===anchorFa), sharedMo=(p.mother_id&&p.mother_id===anchorMo);
+    var isHalf=!(sharedFa&&sharedMo)&&(p.father_id===anchorFa||p.mother_id===anchorMo||p.father_id===anchorMo||p.mother_id===anchorFa);
+    if(isHalf){
+      // show exactly the two parents of this half-sibling: the shared one + their different one.
+      // no spouse expansion (keeps the cap clean); the different parent is tinted as step.
+      var fa=byId[p.father_id||''], mo=byId[p.mother_id||''];
+      var sharedId = sharedFa? p.father_id : (sharedMo? p.mother_id : (p.father_id===anchorMo?p.father_id:p.mother_id));
+      h+='<div class="lin-halfcap"><div class="lin-row lin-row-up">';
+      [fa,mo].forEach(function(par){
+        if(!par)return;
+        var isDiff = par.id!==anchorFa && par.id!==anchorMo;   // the non-shared parent = step relative to anchor
+        h+='<div class="lin-cell"><div class="lin-couple">'+linNode(par,{step:isDiff})+'</div></div>';
+      });
+      h+='</div><div class="lin-conn-up"></div><div class="lin-halfcap-note">half-sibling line</div></div>';
+    }
+  }
+  h+='<div class="lin-anchor-badge">'+(isAnchor?'Selected':'Added sibling')+'</div>';
+  h+='<div class="lin-cell lin-anchor-cell">'+linCouple(p,isAnchor)+'</div>';
+  var ch=kids(p.id).map(function(cid){return byId[cid];}).filter(Boolean);
+  if(ch.length){
+    if(linColDown.has(p.id)){
+      h+='<div class="lin-conn-down"></div><div class="lin-collapsed-note" onclick="toggleLinDown(\''+p.id+'\')">\u25BE descendants hidden \u2014 click to show</div>';
+    } else {
+      h+='<button class="lin-tog" onclick="toggleLinDown(\''+p.id+'\')">\u25BE hide down</button><div class="lin-conn-down"></div>';
+      h+='<div class="lin-row lin-row-down">';
       ch.forEach(function(c){ h+=buildDescendants(c); });
       h+='</div>';
     }
@@ -2079,7 +2162,6 @@ function renderLineage(){
   var anchor=byId[lineageAnchor];
   linIdCount={};   // reset per-render duplicate tally
   var fa=byId[anchor.father_id||''], mo=byId[anchor.mother_id||''];
-  var ch=kids(anchor.id).map(function(cid){return byId[cid];}).filter(Boolean);
   var html='';
 
   // --- UPPER HALF: ancestors (only if the anchor has parents) ---
@@ -2088,9 +2170,9 @@ function renderLineage(){
     if(linColUp.has(anchor.id)){
       html+='<div class="lin-collapsed-note" onclick="toggleLinUp(\''+anchor.id+'\')">\u25B4 ancestors hidden \u2014 click to show</div>';
     } else {
-      html+='<div class="lin-row">';
-      if(fa) html+=buildAncestors(fa);
-      if(mo) html+=buildAncestors(mo);
+      html+='<div class="lin-row lin-row-up">';
+      if(fa) html+=buildAncestors(fa,anchor.mother_id||'');
+      if(mo) html+=buildAncestors(mo,anchor.father_id||'');
       html+='</div>';
       html+='<button class="lin-tog" onclick="toggleLinUp(\''+anchor.id+'\')">\u25B4 hide ancestors</button>';
     }
@@ -2099,32 +2181,23 @@ function renderLineage(){
     html+='<div class="lin-divider">Ancestors &#x2191;</div>';
   }
 
-  // --- ANCHOR (the pinch point) ---
-  html+='<div class="lin-anchor-badge">Selected</div>';
-  html+='<div class="lin-cell lin-anchor-cell">'+linCouple(anchor,true)+'</div>';
+  // --- ANCHOR ROW: anchor + any added siblings side by side (each with its own descendants) ---
+  html+='<div class="lin-anchor-row">';
+  html+=buildAnchorPerson(anchor,true,anchor.father_id||'',anchor.mother_id||'');
+  linAddedSibs.forEach(function(sid){
+    var s=byId[sid]; if(s) html+=buildAnchorPerson(s,false,anchor.father_id||'',anchor.mother_id||'');
+  });
+  html+='</div>';
 
-  // anchor's siblings as hyperlinks (only the anchor)
+  // anchor's siblings as add/remove toggle links
   var sibIds=(fa?kids(fa.id):[]).concat(mo?kids(mo.id):[]).filter(function(v,i,a){return a.indexOf(v)===i;});
   var sibs=sibIds.map(function(cid){return byId[cid];}).filter(function(x){return x&&x.id!==anchor.id;});
   if(sibs.length){
-    html+='<div class="lin-sibs"><strong>Siblings:</strong> ';
-    sibs.forEach(function(s,i){ html+='<span class="sib-tag" onclick="lineageSelect(\''+s.id+'\')">'+esc(s.name)+'</span>'+(i<sibs.length-1?', ':''); });
-    html+='</div>';
-  }
-
-  // --- LOWER HALF: descendants (only if the anchor has children) ---
-  if(ch.length){
-    html+='<div class="lin-divider">Descendants &#x2193;</div>';
-    html+='<div class="lin-half lin-half-down">';
-    html+='<div class="lin-conn-down"></div>';
-    if(linColDown.has(anchor.id)){
-      html+='<div class="lin-collapsed-note" onclick="toggleLinDown(\''+anchor.id+'\')">\u25BE descendants hidden \u2014 click to show</div>';
-    } else {
-      html+='<button class="lin-tog" onclick="toggleLinDown(\''+anchor.id+'\')">\u25BE hide descendants</button>';
-      html+='<div class="lin-row">';
-      ch.forEach(function(c){ html+=buildDescendants(c); });
-      html+='</div>';
-    }
+    html+='<div class="lin-sibs"><strong>Siblings</strong> (click to add / remove beside the selected person): ';
+    sibs.forEach(function(s,i){
+      var on=linAddedSibs.indexOf(s.id)>=0;
+      html+='<span class="sib-tag'+(on?' on':'')+'" onclick="toggleSibling(\''+s.id+'\')">'+(on?'\u2713 ':'')+esc(s.name)+'</span>'+(i<sibs.length-1?' ':'');
+    });
     html+='</div>';
   }
 
@@ -3028,6 +3101,7 @@ document.addEventListener('keydown',function(e){
 });
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===document.getElementById('modal'))closeModal();});
 document.getElementById('admin-modal').addEventListener('click',function(e){if(e.target===document.getElementById('admin-modal'))closeAdminModal();});
+
 
 
 
